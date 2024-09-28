@@ -1,0 +1,7 @@
+/* makes sure scroll bar doesn't appear in game */
+body{
+  overflow: hidden;
+  /* hides the scroll bar  */
+  margin : 0;
+  padding : 0; }
+
