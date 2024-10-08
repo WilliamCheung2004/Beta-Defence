@@ -32,6 +32,8 @@ var health = 400;
 var maxHealth = 400;
 //the beginning number of enemies can be created
 enemysSpawned = 1
+//default tower range
+defaultRange = 200
 
 let start
 
@@ -46,12 +48,12 @@ function setup() {
   createCanvas(windowWidth, windowHeight)
   //stores every button relating to the menu
   menuButtons = [
-    new Button("Start", windowWidth / 2, windowHeight / 2 + 100, 250, 100, () => { gameMode = 'play'; buttons = gameButtons}),
+    new Button("Start", windowWidth / 2, windowHeight / 2 + 100, 200, 100, () => { gameMode = 'play'; buttons = gameButtons}),
   ]
   //stpres every button relating to the game
   gameButtons =
-    [new Button('⚙️', windowWidth - 50, 60, 50, 50, () => { gameMode = 'pause'; buttons = pauseButtons}),
-    new Button('🛒', windowWidth - 130, 60, 50, 50, () => { gameMode = 'shop'; buttons = shopButtons })
+    [new Button('⚙️', windowWidth - 30, 30, 50, 50, () => { gameMode = 'pause'; buttons = pauseButtons}),
+    new Button('🛒', windowWidth - 100, 30, 50, 50, () => { gameMode = 'shop'; buttons = shopButtons })
     ]
   //stores every button relating to the pause menu
   pauseButtons = [
@@ -75,8 +77,9 @@ function setup() {
   buttons = menuButtons
   //
   towers.push(new Tower(this.x, this.y,));
-  towersRange.push(new TowerRange(this.x, this.y,))
+  towersRange.push(new TowerRange(towers.x,towers.y,towers.x/2))
 }
+
 function mousePressed() {
   for (b of buttons) { b.clicked() }
 }
@@ -124,6 +127,45 @@ function draw() {
   }
 }
 
+//menu updating 
+function updateMenu(){
+ menuButtons[0].x = windowWidth/2 
+}
+
+//game updating 
+function updateGame(){
+  gameButtons[0].x = windowWidth - 30;
+  gameButtons[1].x = windowWidth - 100
+}
+
+function updateTower(){
+  for(let tower of towers){
+    tower.x = windowWidth/2
+    tower.y = windowHeight/2
+    tower.updatePosition();
+  }
+}
+
+function updateRange(){
+  for(let towerRange of towersRange){
+    for(let tower of towers){
+    towerRange.x = tower.x
+    towerRange.y = tower.y
+    towerRange.r = defaultRange
+  }
+ }
+}
+
+
+function windowResized(){
+  updateMenu();
+  updateGame();
+  updateTower();
+  updateRange();
+  console.log("Resized")
+  resizeCanvas(windowWidth,windowHeight);
+}
+
 function upgradeHealth(){
   health = health + 20
   maxHealth = maxHealth + 20
@@ -148,25 +190,40 @@ function drawMenu() {
   background(start)
 }
 
-//when game starts, draw the game
-function drawGame() {
-  background("black");
+function drawHealth(){
+  //text
   fill("white")
   stroke("black")
   strokeWeight(1)
   textSize(20)
   text("Health", 100, 20)
-  text("Money", 390, 20)
+
+  //bar itself
+  rectMode(CORNER);
+  noStroke();
+  fill("red")
+  rect(5, 40, map(health, 0, maxHealth, 0, 200), 20);
+  noFill();
+  stroke("white")
+  strokeWeight(2)
+  rect(5,40,200,20)
+}
+
+function drawMoney(){
+  text("Money", windowWidth/2 + 20, 20)
   textSize(30)
-  text(money + " " + "$", 400, 60)
+  text(money + " " + "$", windowWidth/2 + 20, 60)
   rectMode(CORNER)
   stroke("white");
   strokeWeight(2);
   noFill();
-  rect(10, 40, 200, 20);
-  noStroke();
-  fill("red");
-  rect(10, 40, map(health, 0, maxHealth, 0, 200), 20);
+}
+
+//when game starts, draw the game
+function drawGame() {
+  background("black");
+  drawHealth();
+  drawMoney();
   rectMode(CENTER)
   //enables enemies to be drawn
   spawn()
@@ -207,7 +264,7 @@ function drawGame() {
 // draws the main title of the game
 function drawTitle() {
   fill("gold")
-  textSize(100)
+  textSize(50)
   stroke("black")
   text("Beta Defence", windowWidth / 2, windowHeight / 2);
 }
