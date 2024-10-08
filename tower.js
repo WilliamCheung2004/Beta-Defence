@@ -22,14 +22,14 @@ class Tower {
     //create an outline for the tower
     stroke("black")
     //the body of the tower
-    circle(windowWidth / 2, windowHeight / 2, 50);
+    circle(windowWidth / 2, windowHeight / 2, 50 );
     //makes sure the tower cannon is drawn with the main body of tower
     translate(this.x, this.y)
     fill("silver")
     //create an outline for the tower
     stroke("black")
     //rotates the tower cannon with an offset according to the players cursor position
-    rotate(this.angle - 80.1)
+    rotate(this.angle)
     //draw cannon for tower
     rect(0, 30, 30, 55)
     pop()
@@ -38,10 +38,10 @@ class Tower {
 
 //how far the tower can technically "see" before it can automatically shoot an enemy
 class TowerRange {
-  constructor(x, y, r) {
-    this.x = x;
-    this.y = y;
-    this.r = r;
+  constructor() {
+    this.x = windowWidth/2;
+    this.y = windowHeight/2;
+    this.r = this.x/1.5;
   }
   // draws the towers range as a small red outline of a circle
   draw() {
@@ -52,7 +52,7 @@ class TowerRange {
     //gives outline for tower range
     fill("black")
     //the range of the tower, drawn using the x,y and radius
-    circle(windowWidth / 2, windowHeight / 2, 400);
+    circle(this.x,this.y,this.r);
   }
 }
 
