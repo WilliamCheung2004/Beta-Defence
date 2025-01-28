@@ -9,7 +9,7 @@ If using visual studio:
 3. Right click index.html and then show preview, the game should run from there
 4. You can also then use the hamburger icon provided by this extention to run the game in a browser
 
-Other option:
+Other options:
 1. Within windows run Command Prompt 
 2. In Command Prompt navigate to the game folder using cd - e.g. (cd C:\Users\Name\Downloads\Beta-Defence-main>)
 3. Type - python -m http.server in command prompt
