@@ -3,7 +3,7 @@ I tried to recreate some aspects of the game and seeing how far I can replicate 
 
 To run the game first download all the game files then:
 
-If using visual studio:
+If using Visual Studio:
 1. Download Extention Live Preview
 2. Import the game files
 3. Right click index.html and then show preview, the game should run from there
