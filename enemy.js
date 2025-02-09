@@ -9,16 +9,10 @@ class Enemy {
     this.health = 1
     //the damage each enemy will deal when colliding with the tower
     this.damage = 1
+    //default speed of the enemy
+    this.defaultSpeed = 1
     // sets the default speed enemies will move
-    this.speed = 1
-    // calculates x distance from tower to enemy
-    this.DistX = towers[0].x - this.x;
-    // calculates y distance from tower to enemy
-    this.DistY = towers[0].y - this.y;
-    //finds the distance between tower and enemy
-    this.distance = Math.sqrt((this.DistX * this.DistX) + (this.DistY * this.DistY));
-    //find angle between enemy and player
-    this.angle = Math.atan2(this.DistY, this.DistX)
+    this.speed = max(windowWidth * 0.002,windowHeight * 0.002)
   }
 
 
@@ -40,19 +34,28 @@ class Enemy {
 
   update() {
 
+    //assumes enemies aren't colliding with the tower
+    let towercolliding = false
+
+    // calculates x distance from tower to enemy
+    this.DistX = towers[0].x - this.x;
+    // calculates y distance from tower to enemy
+    this.DistY = towers[0].y - this.y;
+
+    //finds the distance between tower and enemy
+    this.distance = Math.sqrt((this.DistX * this.DistX) + (this.DistY * this.DistY));
+    //find angle between enemy and player
+    this.angle = Math.atan2(this.DistY, this.DistX)
+
     //finds x angle enemy needs to move
     this.speedX = Math.cos(this.angle);
     //finds y angle enemy needs to move
     this.speedY = Math.sin(this.angle);
 
-
     //moves enemy's x cordinate based on the speed
     this.x += this.speedX * this.speed
     //moves enemy's y cordinate based on the speed
     this.y += this.speedY * this.speed
-
-    //assumes enemies aren't colliding with the tower
-    let towercolliding = false
 
     // loop through existing enemy list 
     for (let k = 0; k < enemys.length; k++) {
@@ -71,6 +74,11 @@ class Enemy {
         this.speed = 0.00001
         //deal damage to the tower based on the enemys damage per second
         health -= this.damage * 0.1
+      }else{
+        this.speed = windowWidth * 0.002
+      }
+
+
         //if the player has no more health 
         if (health < 0) {
           //makes sure that the players health cannot go below 0 
@@ -78,7 +86,7 @@ class Enemy {
           //once player has no more health, then the player is "dead" so enable losing screen
           gameMode = "dead", buttons = deadButtons
         }
-      }
+      
     }
   }
 }

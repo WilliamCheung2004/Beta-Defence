@@ -5,10 +5,10 @@ class Tower {
     this.x = windowWidth / 2;
     this.y = windowHeight / 2;
     //stores position of the tower
-    this.pos = createVector(this.x, this.y)
+    this.pos = createVector(this.x, this.y)   
   }
-  //draws the body of the tower and the cannon of the tower
-  draw() {
+    //draws the body of the tower and the cannon of the tower
+    draw() {
     //only move the tower and nothing else
     push()
     //positions the cannon with the tower
@@ -16,22 +16,23 @@ class Tower {
     //stores position of players cursor position
     this.mouse = createVector(mouseX, mouseY)
     //finds distance between players mouse and towers position
-    this.angle = p5.Vector.sub(this.pos, this.mouse).heading()
+    this.angle = p5.Vector.sub(this.mouse, createVector(windowWidth/2,windowHeight/2)).heading()
     //fills in main body of tower in cyan
     fill("cyan");
     //create an outline for the tower
     stroke("black")
     //the body of the tower
-    circle(windowWidth / 2, windowHeight / 2, 50 );
+    circle(windowWidth / 2, windowHeight / 2, windowWidth * 0.05 );
     //makes sure the tower cannon is drawn with the main body of tower
-    translate(this.x, this.y)
+    push()
+    translate(windowWidth / 2, windowHeight / 2)
     fill("silver")
     //create an outline for the tower
     stroke("black")
     //rotates the tower cannon with an offset according to the players cursor position
-    rotate(this.angle)
+    rotate(this.angle - PI / 2)
     //draw cannon for tower
-    rect(0, 30, 30, 55)
+    rect(0, windowWidth * 0.015, windowWidth * 0.03, windowWidth * 0.05)
     pop()
   }
 }
@@ -43,8 +44,8 @@ class TowerRange {
     this.y = windowHeight/2;
     this.r = this.x/1.5;
   }
-  // draws the towers range as a small red outline of a circle
-  draw() {
+    // draws the towers range as a small red outline of a circle
+    draw() {
     //towers range is filled in red
     stroke("red")
     //adjusts how thin the towers range is 
@@ -68,12 +69,12 @@ class Projectile {
     this.bv.setMag(this.speed)
   }
 
-  //drawn the projectile at towers position and fill in white
-  draw() {
+    //drawn the projectile at towers position and fill in white
+    draw() {
     //colour projectile white
     fill("white")
     //projectile will be a small ellipse at the position of the tower 
-    ellipse(this.pos.x, this.pos.y, 15)
+    ellipse(this.pos.x + 30, this.pos.y + 30, 15)
   }
   //update the projectiles current position
   update() {
@@ -109,7 +110,7 @@ class manualProjectile {
     this.x = x
     this.y = y
     //the speed the projectile will move when fired
-    this.speed = 2
+    this.speed = windowWidth * 0.002
     //calculates the x distance between the  mouse and the tower
     this.DistX = mouseX - towers[0].x;
     // calculates y distance from mouse to the tower
@@ -119,15 +120,11 @@ class manualProjectile {
 
   }
 
-
+  //Draw Projectile
   draw() {
-    //colours the projectile white
     fill("white")
-    //gives the projectile an outline 
     stroke("black")
-    //draws the projectile as a small circle
     ellipse(this.x, this.y, 15)
-
   }
 
   update() {
@@ -136,14 +133,13 @@ class manualProjectile {
     //finds y angle projectile needs to move
     this.speedY = Math.sin(this.angle);
 
-
     //moves enemy's x cordinate based on the speed
     this.x += this.speedX * this.speed
     //moves enemy's y cordinate based on the speed
     this.y += this.speedY * this.speed
   }
+
   hashitenemy() {
-    //loops through enemy array
     for (let i = enemys.length - 1; i >= 0; i--) {
       //checks if projectile is currently colliding with an enemy
       let enemyHit = collideRectCircle(enemys[i].x - 25, enemys[i].y - 25, 50, 50, this.x, this.y, 15)
@@ -165,6 +161,16 @@ class manualProjectile {
     return false
   }
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

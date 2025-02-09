@@ -1,10 +1,11 @@
+// --- (Items) ---:
+
 var buttons = []
 var pauseButtons = []
 var menuButtons = []
 var gameButtons = []
 var deadButtons = []
 var shopButtons = []
-//stores the current game mode the player starts on, that being the menu
 var gameMode = 'menu'
 var towers = [];
 var towersRange = [];
@@ -12,78 +13,81 @@ var enemys = [];
 var projectiles = [];
 var manualProjectiles = []
 var shopButtons = []
-//the time since the tower has last shot 
+
+
+// --- (Mechanics (Game) ) ---:
+
 var lastFired = 0
-//how long can it be until the tower can shoot again
 var cooldown = 1000
-//the time since the player has last shot
 var manualFire = 0
-//how long can it be until the player can shoot again
 var manualCooldown = 1300
-//the time it has been since an enemy has been created
 var lastSpawned = 0
-//how long it can be until another enemy can be created
 var spawnCooldown = 1000
-// stores the default amount of money player has when beginning the game
 var money = 0
-//stores the default value of health the player begins with
 var health = 400;
-//the maximum amount of health the player can have
 var maxHealth = 400;
-//the beginning number of enemies can be created
 enemysSpawned = 1
-//default tower range
 defaultRange = 200
 
-let start
+// --- Scaling for screen ) ---:
+var minW = 20 
+var minH = 20
+var maxW = 500
+var maxH = 500
+
+// --- Fade Animation) ---:
+let alpha = 0
+let colorSpeed = 5
+
+// --- (Canvas Loading) ---:
 
 // loads in image for menu background
 function preload() {
-  //stores the menu image as a variable so can be accessed
   start = loadImage("background.png");
 }
 
 function setup() {
-  //creates a canvas that will cover whole screen 
+
   createCanvas(windowWidth, windowHeight)
-  //stores every button relating to the menu
+  
   menuButtons = [
-    new Button("Start", windowWidth / 2, windowHeight / 2 + 100, 200, 100, () => { gameMode = 'play'; buttons = gameButtons}),
+    new Button("Start", windowWidth / 2, windowHeight / 2 + windowHeight * 0.1, windowWidth * 0.35, windowHeight * 0.08, () => { gameMode = 'play'; buttons = gameButtons}),
   ]
-  //stpres every button relating to the game
+
   gameButtons =
-    [new Button('⚙️', windowWidth - 30, 30, 50, 50, () => { gameMode = 'pause'; buttons = pauseButtons}),
-    new Button('🛒', windowWidth - 100, 30, 50, 50, () => { gameMode = 'shop'; buttons = shopButtons })
+    [new Button('⚙️', windowWidth * 0.95, 30, min(max(windowWidth * 0.1, minW), maxW), 50, () => { gameMode = 'pause'; buttons = pauseButtons}),
+    new Button('🛒', windowWidth * 0.8, 30, min(max(windowWidth * 0.1, minW), maxW), 50, () => { gameMode = 'shop'; buttons = shopButtons })
     ]
-  //stores every button relating to the pause menu
+
   pauseButtons = [
-    new Button("Continue", windowWidth / 2, windowHeight / 2, 250, 50, () => { gameMode = 'play'; buttons = gameButtons }),
-    new Button('Quit', windowWidth / 2, windowHeight / 2 + 100, 250, 50, () => { gameMode = 'menu'; buttons = menuButtons }),
+    new Button("Continue", windowWidth / 2, windowHeight / 2, windowWidth * 0.35, windowHeight*0.08, () => { gameMode = 'play'; buttons = gameButtons }),
+    new Button('Quit', windowWidth / 2, windowHeight / 2 + windowHeight * 0.1,  windowWidth * 0.35, windowHeight*0.08, () => { gameMode = 'menu'; buttons = menuButtons }),
   ]
-  //stores every button relating to the losing screen
+
   deadButtons =
     [new Button("Play Again?", windowWidth / 2, windowHeight / 2, 250, 50, () => { gameMode = 'replay'; buttons = gameButtons }),
     new Button('Quit', windowWidth / 2, windowHeight / 2 + 100, 250, 50, () => { gameMode = 'menu'; buttons = menuButtons }),
     ]
 
   shopButtons =
-    //close shop
+
     [new Button("X", windowWidth - 50, 50, 70, 70, () => { gameMode = 'play'; buttons = gameButtons }),
-    // Upgrade 1
     new Button("Increase Health", 150 , 200, 180, 30, () => { gameMode = 'upgrade'; buttons = gameButtons })
      ]
 
-  //loads in the menu buttons first since this is the first screen player will be on 
   buttons = menuButtons
-  //
   towers.push(new Tower(this.x, this.y,));
   towersRange.push(new TowerRange(towers.x,towers.y,towers.x/2))
 }
 
+// --- (Game methods) ---:
+
+//Check mouse click
 function mousePressed() {
   for (b of buttons) { b.clicked() }
 }
 
+//Reset game when player dies / Starts new one
 function reset() {
   enemys.length = 0
   projectiles.length = 0
@@ -93,8 +97,17 @@ function reset() {
   enemysSpawned = 1
 }
 
+
+// --- (Draw function - actually draw the game) ---:
+
+//When player clicks button, switch game modes
 function draw() {
-  //when player clicks button, switch game modes
+  background(0)
+
+  if(gameMode != 'pause'){
+    restAlpha();
+  }
+  
   switch (gameMode) {
     case 'menu':
       drawMenu()
@@ -104,6 +117,7 @@ function draw() {
       drawGame()
       break
     case 'pause':
+      drawGame()
       drawPause()
       break
     case 'dead':
@@ -121,57 +135,97 @@ function draw() {
       upgradeHealth()
       break
   }
-
   for (b of buttons) {
     b.render()
   }
 }
 
-//menu updating 
+function restAlpha(){
+  alpha = 0
+}
+
+// --- (Update methods) ---:
+
+//Menu updating (Only when screen size changes) 
 function updateMenu(){
- menuButtons[0].x = windowWidth/2 
-}
+  menuButtons[0].x = windowWidth/2 
+  menuButtons[0].y = windowHeight / 2 + windowHeight * 0.1
+  menuButtons[0].width = 300
+  menuButtons[0].height = 125
+  
+  if(gameMode === 'menu'){
+    drawTitle()
+  }
+ }
 
-//game updating 
+//Game updating 
 function updateGame(){
-  gameButtons[0].x = windowWidth - 30;
-  gameButtons[1].x = windowWidth - 100
-}
 
-function updateTower(){
+  //Update the buttons within game - e.g. shop and pause
+  gameButtons[0].x = windowWidth - gameButtons[0].width/2 - 5
+  gameButtons[0].y = gameButtons[0].height/2 + 5
+  gameButtons[0].width = windowWidth * 0.05
+  gameButtons[0].height = windowWidth * 0.05
+
+  gameButtons[1].x = gameButtons[0].x - windowWidth * 0.06
+  gameButtons[1].y = gameButtons[1].height/2 + 5
+  gameButtons[1].width = windowWidth * 0.05
+  gameButtons[1].height = windowWidth * 0.05
+  
+  //Update the tower itself 
+  for(let towerRange of towersRange){
+    towerRange.x = windowWidth/2
+    towerRange.y = windowHeight/2
+    towerRange.r = windowWidth/4
+  }
+
   for(let tower of towers){
     tower.x = windowWidth/2
     tower.y = windowHeight/2
-    tower.updatePosition();
   }
-}
 
-function updateRange(){
-  for(let towerRange of towersRange){
-    for(let tower of towers){
-    towerRange.x = tower.x
-    towerRange.y = tower.y
-    towerRange.r = defaultRange
+  for(let manualProjectile of manualProjectiles){
+    manualProjectile.speed = windowWidth * 0.002
   }
+  
+  // Enemy updating
+  for (let enemy of enemys) {
+    enemy.speed = max(windowWidth * 0.002,windowHeight * 0.002)
+    enemy.update();
  }
+
+ if(gameMode === 'play'){
+  //Any other items on game screen
+  drawHealth()
+  drawMoney()
+ }
+
 }
 
+function updatePause(){
 
+  pauseButtons[0].x = windowWidth / 2
+  pauseButtons[0].y = windowHeight / 2 
+  pauseButtons[0].width = windowWidth * 0.25
+  pauseButtons[0].height = windowWidth * 0.05
+
+  pauseButtons[1].x = windowWidth/ 2 
+  pauseButtons[1].y = pauseButtons[0].y + pauseButtons[1].height + 20
+  pauseButtons[1].width = windowWidth * 0.25
+  pauseButtons[1].height = windowWidth * 0.05
+  
+}
+
+//Update game per screen change
 function windowResized(){
+  resizeCanvas(windowWidth, windowHeight)
   updateMenu();
   updateGame();
-  updateTower();
-  updateRange();
-  console.log("Resized")
-  resizeCanvas(windowWidth,windowHeight);
+  updatePause();
 }
 
-function upgradeHealth(){
-  health = health + 20
-  maxHealth = maxHealth + 20
-}
+// ---(Drawing methods) ---:
 
-//when the player has no more health, draw the losing screen
 function drawDead() {
   background(255, 255, 255, 0.6)
   fill("white")
@@ -182,111 +236,122 @@ function drawDead() {
   text("You Died!", windowWidth / 2, windowHeight / 2 - 125)
 }
 
-//draws the menu screen 
 function drawMenu() {
-  //when player is in menu, reset the game
   reset()
-  //fills in the background by the image stored in variable start
   background(start)
 }
 
 function drawHealth(){
-  //text
   fill("white")
   stroke("black")
   strokeWeight(1)
-  textSize(20)
-  text("Health", 100, 20)
+  let healthSize = min(windowWidth, windowHeight) * 0.03
+  textSize(healthSize)
+  text("Health", windowWidth * 0.065, healthSize)
 
-  //bar itself
   rectMode(CORNER);
   noStroke();
   fill("red")
-  rect(5, 40, map(health, 0, maxHealth, 0, 200), 20);
+  rect(windowWidth * 0.01, healthSize + 10, map(health, 0, maxHealth, 0, windowWidth*0.1), 20);
   noFill();
   stroke("white")
   strokeWeight(2)
-  rect(5,40,200,20)
+  rect(windowWidth*0.01,healthSize + 10,windowWidth*0.1,20)
 }
 
 function drawMoney(){
-  text("Money", windowWidth/2 + 20, 20)
-  textSize(30)
-  text(money + " " + "$", windowWidth/2 + 20, 60)
+  let moneySize = min(windowWidth, windowHeight) * 0.03
+  textSize(moneySize)
+  fill("white")
+  noStroke();
+  text("Money", windowWidth/2 + 20, moneySize)
+  text(money + " " + "$", windowWidth/2 + 20 , moneySize + moneySize)
   rectMode(CORNER)
-  stroke("white");
-  strokeWeight(2);
   noFill();
 }
 
-//when game starts, draw the game
 function drawGame() {
   background("black");
   drawHealth();
   drawMoney();
   rectMode(CENTER)
-  //enables enemies to be drawn
   spawn()
 
-  //draws the towers range
+  
   for (r of towersRange) {
     r.draw()
   }
-  //draws the tower
+
   for (t of towers) {
     t.draw();
   }
-  //for every enemy in the enemies array
+
   for (e of enemys) {
-    //draw the enemy 
     e.draw();
-    //update the enemies position
+    if(gameMode === 'play'){
     e.update();
+    }
   }
-  // for every projectile in the projectiles array
+
   for (p of projectiles) {
     p.draw();
-    //update the projectiles position
+    if(gameMode === 'play'){
     p.update();
-    //checks if projectile has collided with some enemies
+    }
     p.hashitenemy()
   }
-  // for every projectile shot by the player
+
   for (m of manualProjectiles) {
-    //draw the projectile 
     m.draw()
-    //update the projectiles position
+    if(gameMode === 'play'){
     m.update()
-    //check if the projectile has collided with some enemies 
+    }
     m.hashitenemy()
   }
 }
-// draws the main title of the game
+
 function drawTitle() {
   fill("gold")
-  textSize(50)
+  let titleSize = min(windowWidth, windowHeight) * 0.15
+  textSize(titleSize)
   stroke("black")
   text("Beta Defence", windowWidth / 2, windowHeight / 2);
 }
 
-//draws the pause screen when the pause button is clicked
 function drawPause() {
-  background(255, 255, 255, 0.6)
-  fill("white")
-  fill("black")
-  rect(windowWidth / 2, windowHeight / 2, 500, 500)
-  textSize(100)
-  fill("white")
-  text("Paused", windowWidth / 2, windowHeight / 2 - 125)
+
+  let time = millis()
+  
+  if(time > colorSpeed){
+    if(alpha <= 150){
+      alpha+=5
+    }
+  }
+
+  background(255,alpha)
+
+  fill(0)
+  textSize(10)
+  textAlign(CENTER,CENTER)
+  text("Paused", windowWidth/2, windowHeight/2)
+
 }
 
-//draws the shop screen when shop button is pressed 
+function resetAlpha(){
+  if(alpha == 150){
+    alpha = 0
+  }
+}
+
 function drawShop() {
   background("black");
   fill("white")
   textSize(100)
   text("Shop", windowWidth / 2, 100)
 }
+
+
+//--- (Enemy Mechanics) ---
 
 function spawn() {
   //loops through enemies array until a set number enemies are created whilst also drawing these enemies every 2 seconds
@@ -311,8 +376,7 @@ function spawn() {
       }
     }
 
-    // loop through existing enemy list to see if current enemy being drawn is too close to existing enemy
-
+    //Distance checking for each enemy
     for (let j = 0; j < enemys.length; j++) {
       // finds the distance of enemy that is going to be drawn with existing ones
       var d = dist(xco, yco, enemys[j].x, enemys[j].y)
@@ -330,17 +394,21 @@ function spawn() {
   }
 }
 
+
+//--- (Player Mechanics) ---
 function checkHealth() {
-  //if the player has no more health
+
+  //Check player health
   if (health < 0) {
     //then pause the game 
     gameMode = "pause"
   }
 }
 
+//Shooting the tower
 function mouseClicked() {
   //if the player has fired a projectile and the cooldown has passed
-  if (millis() > manualFire + manualCooldown) {
+  if (millis() > manualFire + manualCooldown && gameMode === 'play') {
     //create a new projectile at the towers position
     manualProjectiles.push(new manualProjectile(towers[0].x, towers[0].y))
     //store the amount of time since the player has last fired
@@ -349,9 +417,10 @@ function mouseClicked() {
 }
 
 
+//--- (Tower Mechanics) ---
 function inRange() {
-  // only check if the time now is more than COOLDOWN milliseconds since last event
 
+  //Cooldown for the tower
   if (millis() > lastFired + cooldown) {
 
     //loops through enemy array
@@ -369,6 +438,14 @@ function inRange() {
       }
     }
   }
+}
+
+
+//--- (Upgrade Mechanics) ---
+
+function upgradeHealth(){
+  health = health + 20
+  maxHealth = maxHealth + 20
 }
 
 
