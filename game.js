@@ -16,28 +16,38 @@ var shopButtons = []
 
 
 // --- (Mechanics (Game) ) ---:
-
-var lastFired = 0
-var cooldown = 1000
-var manualFire = 0
-var manualCooldown = 1300
 var lastSpawned = 0
 var spawnCooldown = 1000
+
+// --- (Mechanics) (Player)  ---:
 var money = 0
 var health = 400;
 var maxHealth = 400;
+
+// --- (Mechanics) (Enemy)  ---:
 enemysSpawned = 1
+
+// --- (Mechanics) (Manual Tower)---:
 defaultRange = 200
+var cooldown = 1000
+var manualFire = 0
+var manualCooldown = 1300
+
+//Auto tower
+var lastFired = 0
 
 // --- Scaling for screen ) ---:
 var minW = 20 
 var minH = 20
 var maxW = 500
 var maxH = 500
+let buffer 
+var hasDrawn = false
 
 // --- Fade Animation) ---:
 let alpha = 0
 let colorSpeed = 5
+let drawn = false
 
 // --- (Canvas Loading) ---:
 
@@ -47,26 +57,27 @@ function preload() {
 }
 
 function setup() {
-
   createCanvas(windowWidth, windowHeight)
+  frameRate(60)
+  pixelDensity(1)
   
   menuButtons = [
-    new Button("Start", windowWidth / 2, windowHeight / 2 + windowHeight * 0.1, windowWidth * 0.35, windowHeight * 0.08, () => { gameMode = 'play'; buttons = gameButtons}),
+    new Button("Start", windowWidth / 2, windowHeight / 2 + windowHeight * 0.1, min(windowWidth* 0.3, windowHeight * 0.3), min(windowWidth* 0.15, windowHeight * 0.15), () => { gameMode = 'play'; buttons = gameButtons}),
   ]
 
   gameButtons =
-    [new Button('⚙️', windowWidth * 0.95, 30, min(max(windowWidth * 0.1, minW), maxW), 50, () => { gameMode = 'pause'; buttons = pauseButtons}),
-    new Button('🛒', windowWidth * 0.8, 30, min(max(windowWidth * 0.1, minW), maxW), 50, () => { gameMode = 'shop'; buttons = shopButtons })
+    [new Button('⚙️', 0,0,0,0, () => { gameMode = 'pause'; buttons = pauseButtons}),
+    new Button('🛒', 0,0,0,0, () => { gameMode = 'shop'; buttons = shopButtons })
     ]
 
   pauseButtons = [
-    new Button("Continue", windowWidth / 2, windowHeight / 2, windowWidth * 0.35, windowHeight*0.08, () => { gameMode = 'play'; buttons = gameButtons }),
-    new Button('Quit', windowWidth / 2, windowHeight / 2 + windowHeight * 0.1,  windowWidth * 0.35, windowHeight*0.08, () => { gameMode = 'menu'; buttons = menuButtons }),
+    new Button("Continue", 0,0,0,0, () => { gameMode = 'play'; buttons = gameButtons }),
+    new Button('Quit', 0,0,0,0, () => { gameMode = 'menu'; buttons = menuButtons })
   ]
 
   deadButtons =
-    [new Button("Play Again?", windowWidth / 2, windowHeight / 2, 250, 50, () => { gameMode = 'replay'; buttons = gameButtons }),
-    new Button('Quit', windowWidth / 2, windowHeight / 2 + 100, 250, 50, () => { gameMode = 'menu'; buttons = menuButtons }),
+    [new Button("Play Again?", 0,0,0,0, () => { gameMode = 'replay'; buttons = gameButtons }),
+    new Button('Quit', 0,0,0,0, () => { gameMode = 'menu'; buttons = menuButtons }),
     ]
 
   shopButtons =
@@ -78,6 +89,37 @@ function setup() {
   buttons = menuButtons
   towers.push(new Tower(this.x, this.y,));
   towersRange.push(new TowerRange(towers.x,towers.y,towers.x/2))
+
+  //Initiase buttons 
+  gameButtons[0].width = windowWidth * 0.05
+  gameButtons[0].height = windowWidth * 0.05
+  gameButtons[0].x = windowWidth - gameButtons[0].width/2 - 5
+  gameButtons[0].y = gameButtons[0].height/2 + 5
+
+  gameButtons[1].width = windowWidth * 0.05
+  gameButtons[1].height = windowWidth * 0.05
+  gameButtons[1].x = gameButtons[0].x - windowWidth * 0.06
+  gameButtons[1].y = gameButtons[1].height/2 + 5
+
+  pauseButtons[0].x = windowWidth / 2
+  pauseButtons[0].y = windowHeight / 2 
+  pauseButtons[0].width = windowWidth * 0.25
+  pauseButtons[0].height = windowWidth * 0.05
+
+  pauseButtons[1].x = windowWidth/ 2 
+  pauseButtons[1].y = pauseButtons[0].y + pauseButtons[0].height * 1.25
+  pauseButtons[1].width = windowWidth * 0.25
+  pauseButtons[1].height = windowWidth * 0.05
+
+  deadButtons[0].x = windowWidth / 2
+  deadButtons[0].y = windowHeight / 2 
+  deadButtons[0].width = windowWidth * 0.25
+  deadButtons[0].height = windowWidth * 0.05
+
+  deadButtons[1].x = windowWidth/ 2 
+  deadButtons[1].y = deadButtons[0].y + deadButtons[0].height * 1.25
+  deadButtons[1].width = windowWidth * 0.25
+  deadButtons[1].height = windowWidth * 0.05
 }
 
 // --- (Game methods) ---:
@@ -97,47 +139,56 @@ function reset() {
   enemysSpawned = 1
 }
 
-
+let drawnMenu = false
 // --- (Draw function - actually draw the game) ---:
 
 //When player clicks button, switch game modes
 function draw() {
-  background(0)
 
-  if(gameMode != 'pause'){
-    restAlpha();
-  }
+   if(gameMode != 'pause'){
+     restAlpha();
+     drawn = false
+    }
   
   switch (gameMode) {
+    
     case 'menu':
       drawMenu()
-      drawTitle()
       break
+
     case 'play':
       drawGame()
       break
+
     case 'pause':
       drawGame()
       drawPause()
       break
+
     case 'dead':
       drawDead()
       break
+
     case 'replay':
       reset()
       gameMode = "play"
-      drawGame()
       break
+
     case 'shop':
       drawShop()
+      gameMode = ''
       break
+
     case 'upgrade':
       upgradeHealth()
+      gameMode = ''
       break
   }
+
   for (b of buttons) {
     b.render()
   }
+
 }
 
 function restAlpha(){
@@ -148,41 +199,28 @@ function restAlpha(){
 
 //Menu updating (Only when screen size changes) 
 function updateMenu(){
-  menuButtons[0].x = windowWidth/2 
-  menuButtons[0].y = windowHeight / 2 + windowHeight * 0.1
-  menuButtons[0].width = 300
-  menuButtons[0].height = 125
-  
-  if(gameMode === 'menu'){
-    drawTitle()
+  if(gameMode == "menu"){
+  background(start)
+  fill("gold")
+  let titleSize = min(windowWidth, windowHeight) * 0.1
+  textSize(titleSize)
+  stroke("black")
+  textAlign(CENTER,CENTER)
+  text("Beta Defence", windowWidth / 2, windowHeight/2 - menuButtons[0].height/8);
   }
  }
 
 //Game updating 
 function updateGame(){
-
-  //Update the buttons within game - e.g. shop and pause
-  gameButtons[0].x = windowWidth - gameButtons[0].width/2 - 5
-  gameButtons[0].y = gameButtons[0].height/2 + 5
-  gameButtons[0].width = windowWidth * 0.05
-  gameButtons[0].height = windowWidth * 0.05
-
-  gameButtons[1].x = gameButtons[0].x - windowWidth * 0.06
-  gameButtons[1].y = gameButtons[1].height/2 + 5
-  gameButtons[1].width = windowWidth * 0.05
-  gameButtons[1].height = windowWidth * 0.05
   
   //Update the tower itself 
-  for(let towerRange of towersRange){
-    towerRange.x = windowWidth/2
-    towerRange.y = windowHeight/2
-    towerRange.r = windowWidth/4
-  }
+    towersRange[0].x = windowWidth/2
+    towersRange[0].y = windowHeight/2
+    towersRange[0].r = windowWidth/4
 
-  for(let tower of towers){
-    tower.x = windowWidth/2
-    tower.y = windowHeight/2
-  }
+    towers[0].x = windowWidth/2
+    towers[0].y = windowHeight/2
+  
 
   for(let manualProjectile of manualProjectiles){
     manualProjectile.speed = windowWidth * 0.002
@@ -195,24 +233,51 @@ function updateGame(){
  }
 
  if(gameMode === 'play'){
-  //Any other items on game screen
   drawHealth()
   drawMoney()
  }
 
 }
 
-function updatePause(){
+function updateButtons(){
 
-  pauseButtons[0].x = windowWidth / 2
-  pauseButtons[0].y = windowHeight / 2 
-  pauseButtons[0].width = windowWidth * 0.25
-  pauseButtons[0].height = windowWidth * 0.05
+    menuButtons[0].x = windowWidth/2 
+    menuButtons[0].y = windowHeight / 2 + windowHeight * 0.1
+    menuButtons[0].width = min(windowWidth* 0.3,windowHeight * 0.3)
+    menuButtons[0].height = min(windowWidth* 0.15,windowHeight * 0.15)
 
-  pauseButtons[1].x = windowWidth/ 2 
-  pauseButtons[1].y = pauseButtons[0].y + pauseButtons[1].height + 20
-  pauseButtons[1].width = windowWidth * 0.25
-  pauseButtons[1].height = windowWidth * 0.05
+
+    //Update the buttons within game - e.g. shop and pause
+    gameButtons[0].width = windowWidth * 0.05
+    gameButtons[0].height = windowWidth * 0.05
+    gameButtons[0].x = windowWidth - gameButtons[0].width/2 - 5
+    gameButtons[0].y = gameButtons[0].height/2 + 5
+  
+    gameButtons[1].width = windowWidth * 0.05
+    gameButtons[1].height = windowWidth * 0.05
+    gameButtons[1].x = gameButtons[0].x - windowWidth * 0.06
+    gameButtons[1].y = gameButtons[1].height/2 + 5
+
+    pauseButtons[0].x = windowWidth / 2
+    pauseButtons[0].y = windowHeight / 2 
+    pauseButtons[0].width = windowWidth * 0.25
+    pauseButtons[0].height = windowWidth * 0.05
+  
+    pauseButtons[1].x = windowWidth/ 2 
+    pauseButtons[1].y = pauseButtons[0].y + pauseButtons[1].height * 1.25
+    pauseButtons[1].width = windowWidth * 0.25
+    pauseButtons[1].height = windowWidth * 0.05
+
+    deadButtons[0].x = windowWidth / 2
+    deadButtons[0].y = windowHeight / 2 
+    deadButtons[0].width = windowWidth * 0.25
+    deadButtons[0].height = windowWidth * 0.05
+
+    deadButtons[1].x = windowWidth/ 2 
+    deadButtons[1].y = deadButtons[0].y + deadButtons[1].height * 1.25
+    deadButtons[1].width = windowWidth * 0.25
+    deadButtons[1].height = windowWidth * 0.05
+  
   
 }
 
@@ -221,42 +286,65 @@ function windowResized(){
   resizeCanvas(windowWidth, windowHeight)
   updateMenu();
   updateGame();
-  updatePause();
+  updateButtons();
 }
 
 // ---(Drawing methods) ---:
 
 function drawDead() {
-  background(255, 255, 255, 0.6)
+  let time = millis()
+
+  if(time > colorSpeed){
+    if(alpha <= 50){
+      alpha+=5
+    }
+  }
+
+  background(255,alpha)
+
+  //Box for buttons 
   fill("white")
+  rect(windowWidth/2,deadButtons[0].y - deadButtons[0].height/2,min(windowWidth*0.4,windowHeight * 0.45),min(windowWidth*0.4,windowHeight * 0.45))
+  stroke(255)
+
+  //Text
+  textSize(min(windowWidth, windowHeight) * 0.1)
+  textAlign(CENTER,CENTER)
   fill("black")
-  rect(windowWidth / 2, windowHeight / 2, 500, 500)
-  textSize(100)
-  fill("white")
-  text("You Died!", windowWidth / 2, windowHeight / 2 - 125)
+  stroke(255)
+  text("You Died!", windowWidth/2, deadButtons[0].y - deadButtons[0].height * 1.75)
+
 }
 
 function drawMenu() {
   reset()
   background(start)
+  fill("gold")
+  let titleSize = min(windowWidth, windowHeight) * 0.1
+  textSize(titleSize)
+  stroke("black")
+  textAlign(CENTER,CENTER)
+  text("Beta Defence", windowWidth / 2, windowHeight/2 - menuButtons[0].height/8);
 }
 
 function drawHealth(){
   fill("white")
   stroke("black")
   strokeWeight(1)
-  let healthSize = min(windowWidth, windowHeight) * 0.03
-  textSize(healthSize)
-  text("Health", windowWidth * 0.065, healthSize)
+
+  let healthTextSize = min(windowWidth, windowHeight) * 0.03
+  textSize(healthTextSize)
+  text("Health",min(windowWidth, windowHeight) * 0.06, healthTextSize)
 
   rectMode(CORNER);
   noStroke();
   fill("red")
-  rect(windowWidth * 0.01, healthSize + 10, map(health, 0, maxHealth, 0, windowWidth*0.1), 20);
+  rect(windowWidth * 0.01, healthTextSize + healthTextSize/2, map(health, 0, maxHealth, 0, min(windowWidth,windowHeight) * 0.1), min(windowWidth,windowHeight) * 0.02);
   noFill();
   stroke("white")
   strokeWeight(2)
-  rect(windowWidth*0.01,healthSize + 10,windowWidth*0.1,20)
+  rect(windowWidth * 0.01, healthTextSize + healthTextSize/2, map(health, 0, maxHealth, 0, min(windowWidth,windowHeight) * 0.1), min(windowWidth,windowHeight) * 0.02);
+
 }
 
 function drawMoney(){
@@ -271,20 +359,19 @@ function drawMoney(){
 }
 
 function drawGame() {
+
+  //inRange()
+
+  if(!hasDrawn){
   background("black");
+}
   drawHealth();
   drawMoney();
   rectMode(CENTER)
   spawn()
 
-  
-  for (r of towersRange) {
-    r.draw()
-  }
-
-  for (t of towers) {
-    t.draw();
-  }
+  towersRange[0].draw()
+  towers[0].draw()
 
   for (e of enemys) {
     e.draw();
@@ -310,41 +397,37 @@ function drawGame() {
   }
 }
 
-function drawTitle() {
-  fill("gold")
-  let titleSize = min(windowWidth, windowHeight) * 0.15
-  textSize(titleSize)
-  stroke("black")
-  text("Beta Defence", windowWidth / 2, windowHeight / 2);
-}
+
 
 function drawPause() {
-
   let time = millis()
-  
-  if(time > colorSpeed){
-    if(alpha <= 150){
-      alpha+=5
+
+  if(time > colorSpeed && alpha <= 100){
+      alpha+= 5
     }
-  }
+  
+  background(100,alpha)
 
-  background(255,alpha)
+  if(!drawn){
+  //Box for buttons 
+  fill("white")
+  rect(windowWidth/2,pauseButtons[0].y - pauseButtons[0].height/2,min(windowWidth*0.4,windowHeight * 0.45),min(windowWidth*0.4,windowHeight * 0.45))
 
-  fill(0)
-  textSize(10)
+  //Text
+  textSize(min(windowWidth, windowHeight) * 0.1)
   textAlign(CENTER,CENTER)
-  text("Paused", windowWidth/2, windowHeight/2)
-
+  fill("black")
+  stroke(255)
+  text("Paused", windowWidth/2, pauseButtons[0].y - pauseButtons[0].height * 1.75)
+  }
 }
 
 function resetAlpha(){
-  if(alpha == 150){
     alpha = 0
-  }
 }
 
 function drawShop() {
-  background("black");
+  background("blue");
   fill("white")
   textSize(100)
   text("Shop", windowWidth / 2, 100)
@@ -354,41 +437,32 @@ function drawShop() {
 //--- (Enemy Mechanics) ---
 
 function spawn() {
-  //loops through enemies array until a set number enemies are created whilst also drawing these enemies every 2 seconds
-  while (enemys.length < enemysSpawned && millis() > lastSpawned + spawnCooldown) {
-    // assumes enemy is not colliding
+
+  while (enemys.length < enemysSpawned && millis() > lastSpawned + spawnCooldown && gameMode == 'play') {
+
     colliding = false
-    // generate a random x coordinate for enemy
+
     var xco = (windowWidth * Math.random())
-    // generate a random y coordinate for enemy
     var yco = (windowHeight * Math.random())
 
-    //loops through enemies currently to see if they are drawn within the towers area
-    for (let i = 0; i < enemysSpawned; i++) {
-      //checks if enemys are created within the towers radius
-      var check = dist(xco, yco, windowWidth / 2, windowHeight / 2)
-      //if enemies are created within the towers radius then 
-      if (check < 400) {
-        //generate a new random x coordinate
-        xco = (windowWidth * Math.random())
-        // generate a new random y coordinate
-        yco = (windowHeight * Math.random())
-      }
-    }
+    var check = dist(xco, yco, towersRange[0].x, towersRange[0].y)
 
-    //Distance checking for each enemy
+    if (check < towersRange[0].r ) {
+        xco = (windowWidth * Math.random())
+        yco = (windowHeight * Math.random())
+        colliding = true
+      }
+
+    //Prevent enemies spawning near another  
     for (let j = 0; j < enemys.length; j++) {
-      // finds the distance of enemy that is going to be drawn with existing ones
       var d = dist(xco, yco, enemys[j].x, enemys[j].y)
-      // if enemy is too close - within a distance of 100 of each other don't create the enemy
+
       if (d < 100)
-        // colliding flag set to true so enemy cannot be drawn
         colliding = true
     }
-    // if enemy is not colliding with another enemy, then create enemy in that position
+
     if (!colliding) {
       enemys.push(new Enemy(xco, yco))
-      //stores the last time a previous enemy was created
       lastSpawned = millis()
     }
   }
@@ -407,11 +481,14 @@ function checkHealth() {
 
 //Shooting the tower
 function mouseClicked() {
+  
   //if the player has fired a projectile and the cooldown has passed
-  if (millis() > manualFire + manualCooldown && gameMode === 'play') {
+  if (gameMode == 'play' && millis() > manualFire + manualCooldown) {
     //create a new projectile at the towers position
     manualProjectiles.push(new manualProjectile(towers[0].x, towers[0].y))
     //store the amount of time since the player has last fired
+    manualFire = millis()
+  } else if (gameMode != 'play'){
     manualFire = millis()
   }
 }
@@ -426,7 +503,7 @@ function inRange() {
     //loops through enemy array
     for (let i = 0; i < enemys.length; i++) {
       //if enemy is in range, then inRange will be set to true and so will fire a projectile
-      let inRange = collideRectCircle(enemys[i].x, enemys[i].y, 50, 50, windowWidth / 2, windowHeight / 2, 400);
+      let inRange = collideRectCircle(enemys[i].x, enemys[i].y, enemys[i].width, enemys[i].height, towersRange[0].x, towersRange[0].y, towersRange[0].r);
 
       //checks if enemy is in range and if enemy is being targeted by the tower
       if (inRange && !enemys[i].targeted) {

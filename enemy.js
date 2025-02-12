@@ -11,8 +11,8 @@ class Enemy {
     this.damage = 1
     //default speed of the enemy
     this.defaultSpeed = 1
-    // sets the default speed enemies will move
-    this.speed = max(windowWidth * 0.002,windowHeight * 0.002)
+    // sets the current speed enemies will move
+    this.speed = this.defaultSpeed
   }
 
 
@@ -20,7 +20,7 @@ class Enemy {
     stroke("black")
     //every enemy of this type is coloured red
     fill("red")
-    rect(this.x, this.y, 50, 50)
+    rect(this.x, this.y, 50, 50 )
     //creates an outline on each enemy
     fill("black")
     //draw eyes onto every enemy
