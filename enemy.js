@@ -1,125 +1,60 @@
-//the enemies of the game that will automatically make their way towards the tower
 class Enemy {
+  
   constructor(x, y, w, h) {
+    //attributes of enemies
     this.x = x
     this.y = y
     this.w = w
     this.h = h
-    //how much damage every enemy can take before it can die
+    //stats
     this.health = 1
-    //the damage each enemy will deal when colliding with the tower
     this.damage = 1
-    //default speed of the enemy
     this.defaultSpeed = 1
-    // sets the current speed enemies will move
-    this.speed = this.defaultSpeed
+    this.speed = min(windowWidth * this.defaultSpeed / 500, windowHeight * this.defaultSpeed / 500)
   }
-
-
   draw() {
+    //enemy graphics
     stroke("black")
-    //every enemy of this type is coloured red
     fill("red")
-    rect(this.x, this.y, 50, 50 )
-    //creates an outline on each enemy
+    rect(this.x, this.y, min(windowWidth,windowHeight) * 0.06, min(windowWidth,windowHeight) * 0.06 )
     fill("black")
-    //draw eyes onto every enemy
-    ellipse(this.x + 10, this.y - 5, 10)
-    ellipse(this.x - 10, this.y - 5, 10)
-    //draws mouth on each enemy
-    line(this.x + 10, this.y + 10, this.x - 10, this.y + 10)
-  
-    // }
+    ellipse(this.x + min(windowWidth,windowHeight) * 0.01, this.y - min(windowWidth,windowHeight) * 0.01, min(windowWidth,windowHeight) * 0.01)
+    ellipse(this.x - min(windowWidth,windowHeight) * 0.01, this.y - min(windowWidth,windowHeight) * 0.01, min(windowWidth,windowHeight) * 0.01)
+    line(this.x + min(windowWidth,windowHeight) * 0.01, this.y + min(windowWidth,windowHeight) * 0.01, this.x - min(windowWidth,windowHeight) * 0.01, this.y + min(windowWidth,windowHeight) * 0.01)
   }
-
   update() {
 
-    //assumes enemies aren't colliding with the tower
+    //calc distance from enemy to tower
     let towercolliding = false
-
-    // calculates x distance from tower to enemy
     this.DistX = towers[0].x - this.x;
-    // calculates y distance from tower to enemy
     this.DistY = towers[0].y - this.y;
-
-    //finds the distance between tower and enemy
     this.distance = Math.sqrt((this.DistX * this.DistX) + (this.DistY * this.DistY));
-    //find angle between enemy and player
     this.angle = Math.atan2(this.DistY, this.DistX)
-
-    //finds x angle enemy needs to move
     this.speedX = Math.cos(this.angle);
-    //finds y angle enemy needs to move
     this.speedY = Math.sin(this.angle);
-
-    //moves enemy's x cordinate based on the speed
     this.x += this.speedX * this.speed
-    //moves enemy's y cordinate based on the speed
     this.y += this.speedY * this.speed
 
-    // loop through existing enemy list 
+    //collision detection enemy -> tower
     for (let k = 0; k < enemys.length; k++) {
-      // finds the distance between existing enemy and tower
       var towerdist = dist(this.x, this.y, towers[0].x, towers[0].y)
-      // if current existing enemies position is not equal to tower    
       if (towers[0] != enemys[k]) {
-        // if enemy is too close to tower
-        if (towerdist < 50) {
+        if (towerdist < min(windowWidth,windowHeight) * 0.05) {
           towercolliding = true
         }
       }
-      // if enemy is colliding with tower
-      if (towercolliding) {
-        // makes sure the enemy is colliding with the tower but doesn't overlap on the tower
+      if (towercolliding && gameMode == 'play') {
         this.speed = 0.00001
-        //deal damage to the tower based on the enemys damage per second
-        health -= this.damage * 0.1
+        health -= this.damage * 0.5
       }else{
-        this.speed = windowWidth * 0.002
+        min(windowWidth * this.defaultSpeed / 500, windowHeight * this.defaultSpeed / 500)
       }
 
-
-        //if the player has no more health 
+      //switch gamemode - health 0 
         if (health < 0) {
-          //makes sure that the players health cannot go below 0 
           health = 0
-          //once player has no more health, then the player is "dead" so enable losing screen
           gameMode = "dead", buttons = deadButtons
         }
-      
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

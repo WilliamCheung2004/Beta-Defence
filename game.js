@@ -49,11 +49,17 @@ let alpha = 0
 let colorSpeed = 5
 let drawn = false
 
+// --- Shop Upgrades) ---:
+let healthUpgrade = "200"
+let projectileUpgrade = "200"
+
 // --- (Canvas Loading) ---:
 
 // loads in image for menu background
 function preload() {
   start = loadImage("background.png");
+  upgrade1 = loadImage("heart.png")
+  upgrade2 = loadImage("ammo.png")
 }
 
 function setup() {
@@ -82,8 +88,9 @@ function setup() {
 
   shopButtons =
 
-    [new Button("X", windowWidth - 50, 50, 70, 70, () => { gameMode = 'play'; buttons = gameButtons }),
-    new Button("Increase Health", 150 , 200, 180, 30, () => { gameMode = 'upgrade'; buttons = gameButtons })
+    [new Button("X", 0,0,0,0, () => { gameMode = 'play'; buttons = gameButtons }),
+    new Button(healthUpgrade, 0,0,0,0, () => { gameMode = 'shop'; buttons = shopButtons;upgradeHealth()}),
+    new Button(projectileUpgrade, 0,0,0,0, () => { gameMode = 'shop'; buttons = shopButtons })
      ]
 
   buttons = menuButtons
@@ -120,6 +127,21 @@ function setup() {
   deadButtons[1].y = deadButtons[0].y + deadButtons[0].height * 1.25
   deadButtons[1].width = windowWidth * 0.25
   deadButtons[1].height = windowWidth * 0.05
+
+  shopButtons[0].width = windowWidth  * 0.05
+  shopButtons[0].height = windowWidth * 0.05
+  shopButtons[0].x = windowWidth - shopButtons[0].width/2 - 5
+  shopButtons[0].y = shopButtons[0].height/2 + 5
+
+  shopButtons[1].width = min(windowWidth,windowHeight) * 0.15
+  shopButtons[1].height = min(windowWidth,windowHeight) * 0.07
+  shopButtons[1].x = min(windowWidth,windowHeight) * 0.25
+  shopButtons[1].y = min(windowWidth,windowHeight) * 0.3
+
+  shopButtons[2].width = min(windowWidth,windowHeight) * 0.15
+  shopButtons[2].height = min(windowWidth,windowHeight) * 0.07
+  shopButtons[2].x = min(windowWidth,windowHeight) * 0.25
+  shopButtons[2].y = min(windowWidth,windowHeight) * 0.5615
 }
 
 // --- (Game methods) ---:
@@ -145,7 +167,7 @@ let drawnMenu = false
 //When player clicks button, switch game modes
 function draw() {
 
-   if(gameMode != 'pause'){
+   if(gameMode != 'pause' && gameMode != 'dead'){
      restAlpha();
      drawn = false
     }
@@ -166,6 +188,7 @@ function draw() {
       break
 
     case 'dead':
+      drawGame()
       drawDead()
       break
 
@@ -176,19 +199,32 @@ function draw() {
 
     case 'shop':
       drawShop()
-      gameMode = ''
-      break
-
-    case 'upgrade':
-      upgradeHealth()
-      gameMode = ''
+      gameMode = "shop"
       break
   }
 
-  for (b of buttons) {
-    b.render()
+  //Draw buttons
+  if(gameMode == 'menu'){
+  menuButtons[0].render()
   }
+  
+  else if(gameMode == 'play'){
+    for(g of gameButtons)
+      g.render()
 
+  }else if(gameMode == 'pause'){
+    for(p of pauseButtons)
+      p.render()
+
+  }else if(gameMode == 'dead'){
+    for(d of deadButtons)
+      d.render()
+
+  }else if(gameMode == 'shop'){
+    for(s of shopButtons)
+      s.render()
+  }
+  
 }
 
 function restAlpha(){
@@ -223,12 +259,12 @@ function updateGame(){
   
 
   for(let manualProjectile of manualProjectiles){
-    manualProjectile.speed = windowWidth * 0.002
+    manualProjectile.speed = min(windowWidth * this.defaultSpeed / 500, windowHeight * this.defaultSpeed / 500)
   }
   
   // Enemy updating
   for (let enemy of enemys) {
-    enemy.speed = max(windowWidth * 0.002,windowHeight * 0.002)
+    enemy.speed = min(windowWidth * (enemy.defaultSpeed/500),windowHeight * (enemy.defaultSpeed/500))
     enemy.update();
  }
 
@@ -240,14 +276,15 @@ function updateGame(){
 }
 
 function updateButtons(){
+    //Update the buttons within game - e.g. shop and pause
 
+    //Shop
     menuButtons[0].x = windowWidth/2 
     menuButtons[0].y = windowHeight / 2 + windowHeight * 0.1
     menuButtons[0].width = min(windowWidth* 0.3,windowHeight * 0.3)
     menuButtons[0].height = min(windowWidth* 0.15,windowHeight * 0.15)
 
-
-    //Update the buttons within game - e.g. shop and pause
+    //Game
     gameButtons[0].width = windowWidth * 0.05
     gameButtons[0].height = windowWidth * 0.05
     gameButtons[0].x = windowWidth - gameButtons[0].width/2 - 5
@@ -258,6 +295,7 @@ function updateButtons(){
     gameButtons[1].x = gameButtons[0].x - windowWidth * 0.06
     gameButtons[1].y = gameButtons[1].height/2 + 5
 
+    //Pause
     pauseButtons[0].x = windowWidth / 2
     pauseButtons[0].y = windowHeight / 2 
     pauseButtons[0].width = windowWidth * 0.25
@@ -268,6 +306,7 @@ function updateButtons(){
     pauseButtons[1].width = windowWidth * 0.25
     pauseButtons[1].height = windowWidth * 0.05
 
+    //Dead
     deadButtons[0].x = windowWidth / 2
     deadButtons[0].y = windowHeight / 2 
     deadButtons[0].width = windowWidth * 0.25
@@ -277,9 +316,36 @@ function updateButtons(){
     deadButtons[1].y = deadButtons[0].y + deadButtons[1].height * 1.25
     deadButtons[1].width = windowWidth * 0.25
     deadButtons[1].height = windowWidth * 0.05
+
+    //Shop
+    shopButtons[0].width = windowWidth * 0.05
+    shopButtons[0].height = windowWidth * 0.05
+    shopButtons[0].x = windowWidth - shopButtons[0].width/2 - 5
+    shopButtons[0].y = shopButtons[0].height/2 + 5
   
-  
+    shopButtons[1].width = min(windowWidth,windowHeight) * 0.15
+    shopButtons[1].height = min(windowWidth,windowHeight) * 0.07
+    shopButtons[1].x = min(windowWidth,windowHeight) * 0.25
+    shopButtons[1].y = min(windowWidth,windowHeight) * 0.3
+
+    shopButtons[2].width = min(windowWidth,windowHeight) * 0.15
+    shopButtons[2].height = min(windowWidth,windowHeight) * 0.07
+    shopButtons[2].x = min(windowWidth,windowHeight) * 0.25
+    shopButtons[2].y = min(windowWidth,windowHeight) * 0.5615
 }
+
+//Check if window is maximised or minimized since windowResized does not check this
+let prevWidth = window.innerWidth
+let prevHeight = window.innerHeight
+
+setInterval(function() {
+  if(windowWidth != prevWidth || windowHeight != prevHeight){
+    prevWidth = window.innerWidth
+    prevHeight = window.innerHeight
+    windowResized()
+  }
+},500)
+
 
 //Update game per screen change
 function windowResized(){
@@ -292,13 +358,11 @@ function windowResized(){
 // ---(Drawing methods) ---:
 
 function drawDead() {
+  
   let time = millis()
-
-  if(time > colorSpeed){
-    if(alpha <= 50){
+    if(time > colorSpeed && alpha <= 100){
       alpha+=5
     }
-  }
 
   background(255,alpha)
 
@@ -400,10 +464,10 @@ function drawGame() {
 
 
 function drawPause() {
-  let time = millis()
 
-  if(time > colorSpeed && alpha <= 100){
-      alpha+= 5
+  let time = millis()
+    if(time > colorSpeed && alpha <= 100){
+      alpha+=5
     }
   
   background(100,alpha)
@@ -426,11 +490,18 @@ function resetAlpha(){
     alpha = 0
 }
 
+//test
 function drawShop() {
-  background("blue");
+  background("black");
   fill("white")
-  textSize(100)
-  text("Shop", windowWidth / 2, 100)
+  textAlign(CENTER,CENTER)
+  textSize(min(windowWidth, windowHeight) * 0.05)
+  text("Shop (Beta Version 1.0)", windowWidth / 2, min(windowWidth, windowHeight) * 0.05)
+  text("Health", min(windowWidth,windowHeight) * 0.18, min(windowWidth, windowHeight) * 0.2)
+  text("Bullet Speed", min(windowWidth,windowHeight) * 0.18, min(windowWidth, windowHeight) * 0.45)
+  imageMode(CENTER,CENTER)
+  image(upgrade1,min(windowWidth,windowHeight) * 0.05, min(windowWidth,windowHeight) * 0.315,min(windowWidth, windowHeight) * 0.2,min(windowWidth, windowHeight) * 0.2)
+  image(upgrade2,min(windowWidth,windowHeight) * 0.05, min(windowWidth,windowHeight) * 0.565,min(windowWidth, windowHeight) * 0.1,min(windowWidth, windowHeight) * 0.1)
 }
 
 
@@ -479,7 +550,7 @@ function checkHealth() {
   }
 }
 
-//Shooting the tower
+//Shooting the tower (manual)
 function mouseClicked() {
   
   //if the player has fired a projectile and the cooldown has passed
@@ -521,8 +592,12 @@ function inRange() {
 //--- (Upgrade Mechanics) ---
 
 function upgradeHealth(){
-  health = health + 20
-  maxHealth = maxHealth + 20
+  if(money >= shopButtons[1].text){
+    health = health + 20
+    maxHealth = maxHealth + 20
+    shopButtons[1].text = shopButtons[1].text * 2
+    console.log("Purchased")
+  }
 }
 
 

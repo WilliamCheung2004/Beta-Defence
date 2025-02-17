@@ -86,7 +86,8 @@ class manualProjectile {
   constructor(x, y) {
     this.x = x
     this.y = y
-    this.speed = windowWidth * 0.002
+    this.defaultSpeed = 1
+    this.speed = min(windowWidth * this.defaultSpeed / 500, windowHeight * this.defaultSpeed / 500)
     this.DistX = mouseX - towers[0].x;
     this.DistY = mouseY - towers[0].y;
     this.angle = Math.atan2(this.DistY, this.DistX)
@@ -94,7 +95,7 @@ class manualProjectile {
   draw() {
     fill("white")
     stroke("black")
-    ellipse(this.x, this.y, 15)
+    ellipse(this.x, this.y, min(windowWidth,windowHeight) * 0.02)
   }
   update() {
     this.speedX = Math.cos(this.angle);
