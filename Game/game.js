@@ -110,12 +110,12 @@ function setup() {
 
   pauseButtons[0].x = windowWidth / 2
   pauseButtons[0].y = windowHeight / 2 
-  pauseButtons[0].width = windowWidth * 0.25
+  pauseButtons[0].width = windowWidth * 0.22
   pauseButtons[0].height = windowWidth * 0.05
 
   pauseButtons[1].x = windowWidth/ 2 
   pauseButtons[1].y = pauseButtons[0].y + pauseButtons[0].height * 1.25
-  pauseButtons[1].width = windowWidth * 0.24
+  pauseButtons[1].width = windowWidth * 0.22
   pauseButtons[1].height = windowWidth * 0.05
 
   deadButtons[0].x = windowWidth / 2
@@ -299,12 +299,12 @@ function updateButtons(){
     //Pause
     pauseButtons[0].x = windowWidth / 2
     pauseButtons[0].y = windowHeight / 2 
-    pauseButtons[0].width = windowWidth * 0.25
+    pauseButtons[0].width = windowWidth * 0.22
     pauseButtons[0].height = windowWidth * 0.05
   
     pauseButtons[1].x = windowWidth/ 2 
     pauseButtons[1].y = pauseButtons[0].y + pauseButtons[1].height * 1.25
-    pauseButtons[1].width = windowWidth * 0.24
+    pauseButtons[1].width = windowWidth * 0.22
     pauseButtons[1].height = windowWidth * 0.05
 
     //Dead
