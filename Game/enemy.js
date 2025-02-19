@@ -1,13 +1,13 @@
 class Enemy {
   
-  constructor(x, y, w, h) {
+  constructor(x, y) {
     //attributes of enemies
     this.x = x
     this.y = y
-    this.w = w
-    this.h = h
+    this.w = min(windowWidth,windowHeight) * 0.06
+    this.h = min(windowWidth,windowHeight) * 0.06
     //stats
-    this.health = 1
+    this.health = 10
     this.damage = 1
     this.defaultSpeed = 1
     this.speed = min(windowWidth * this.defaultSpeed / 500, windowHeight * this.defaultSpeed / 500)
@@ -16,14 +16,15 @@ class Enemy {
     //enemy graphics
     stroke("black")
     fill("red")
-    rect(this.x, this.y, min(windowWidth,windowHeight) * 0.06, min(windowWidth,windowHeight) * 0.06 )
+    rect(this.x, this.y, this.w, this.h)
     fill("black")
     ellipse(this.x + min(windowWidth,windowHeight) * 0.01, this.y - min(windowWidth,windowHeight) * 0.01, min(windowWidth,windowHeight) * 0.01)
     ellipse(this.x - min(windowWidth,windowHeight) * 0.01, this.y - min(windowWidth,windowHeight) * 0.01, min(windowWidth,windowHeight) * 0.01)
     line(this.x + min(windowWidth,windowHeight) * 0.01, this.y + min(windowWidth,windowHeight) * 0.01, this.x - min(windowWidth,windowHeight) * 0.01, this.y + min(windowWidth,windowHeight) * 0.01)
   }
   update() {
-
+    this.w = min(windowWidth,windowHeight) * 0.06
+    this.h = min(windowWidth,windowHeight) * 0.06
     //calc distance from enemy to tower
     let towercolliding = false
     this.DistX = towers[0].x - this.x;

@@ -71,7 +71,6 @@ class Projectile {
     for (let i = enemys.length - 1; i >= 0; i--) {
       let enemyHit = collideRectCircle(enemys[i].x - 25, enemys[i].y - 25, 50, 50, this.pos.x, this.pos.y, 15)
       if (enemyHit) {
-        console.log("colliding?", enemyHit);
         enemys.splice(i, 1)
         projectiles.splice(projectiles.indexOf(this), 1)
         money += 100
@@ -83,21 +82,26 @@ class Projectile {
   }
 }
 class manualProjectile {
+  static defaultSpeed = 1
+  static defaultDamage = 1
   constructor(x, y) {
     this.x = x
     this.y = y
-    this.defaultSpeed = 1
+    this.r = min(windowWidth,windowHeight) * 0.02
+    this.defaultSpeed = manualProjectile.defaultSpeed
     this.speed = min(windowWidth * this.defaultSpeed / 500, windowHeight * this.defaultSpeed / 500)
     this.DistX = mouseX - towers[0].x;
     this.DistY = mouseY - towers[0].y;
     this.angle = Math.atan2(this.DistY, this.DistX)
+    this.damage = manualProjectile.defaultDamage
   }
   draw() {
     fill("white")
     stroke("black")
-    ellipse(this.x, this.y, min(windowWidth,windowHeight) * 0.02)
+    ellipse(this.x, this.y, this.r)
   }
   update() {
+    this.r = min(windowWidth,windowHeight) * 0.02
     this.speedX = Math.cos(this.angle);
     this.speedY = Math.sin(this.angle);
     this.x += this.speedX * this.speed
@@ -105,16 +109,25 @@ class manualProjectile {
   }
   hashitenemy() {
     for (let i = enemys.length - 1; i >= 0; i--) {
-      let enemyHit = collideRectCircle(enemys[i].x - 25, enemys[i].y - 25, 50, 50, this.x, this.y, 15)
+      let enemyHit = collideRectCircle(enemys[i].x - enemys[i].w/2, enemys[i].y - enemys[i].h/2, enemys[i].w, enemys[i].h, this.x, this.y, this.r)
+      
       if (enemyHit) {
-        console.log("colliding?", enemyHit);
-        enemys.splice(i, 1)
+        enemys[i].health -= this.damage
+        console.log(enemys[i].health)
         manualProjectiles.splice(manualProjectiles.indexOf(this), 1)
+        enemyHit = false
+
+        if(enemys[i].health <= 0){
+        enemys.splice(i, 1)
         money += 100
         enemysSpawned++
         return true
+        }
       }
     }
     return false
+  }
+  static setSpeed(val){
+    manualProjectile.defaultSpeed = val
   }
 }

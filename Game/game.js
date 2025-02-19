@@ -57,9 +57,9 @@ let projectileUpgrade = "200"
 
 // loads in image for menu background
 function preload() {
-  start = loadImage("background.png");
-  upgrade1 = loadImage("heart.png")
-  upgrade2 = loadImage("ammo.png")
+  start = loadImage("Assets/background.png");
+  upgrade1 = loadImage("Assets/heart.png")
+  upgrade2 = loadImage("Assets/ammo.png")
 }
 
 function setup() {
@@ -90,7 +90,7 @@ function setup() {
 
     [new Button("X", 0,0,0,0, () => { gameMode = 'play'; buttons = gameButtons }),
     new Button(healthUpgrade, 0,0,0,0, () => { gameMode = 'shop'; buttons = shopButtons;upgradeHealth()}),
-    new Button(projectileUpgrade, 0,0,0,0, () => { gameMode = 'shop'; buttons = shopButtons })
+    new Button(projectileUpgrade, 0,0,0,0, () => { gameMode = 'shop'; buttons = shopButtons;upgradeBulletSpeed()})
      ]
 
   buttons = menuButtons
@@ -115,7 +115,7 @@ function setup() {
 
   pauseButtons[1].x = windowWidth/ 2 
   pauseButtons[1].y = pauseButtons[0].y + pauseButtons[0].height * 1.25
-  pauseButtons[1].width = windowWidth * 0.25
+  pauseButtons[1].width = windowWidth * 0.24
   pauseButtons[1].height = windowWidth * 0.05
 
   deadButtons[0].x = windowWidth / 2
@@ -211,6 +211,7 @@ function draw() {
   else if(gameMode == 'play'){
     for(g of gameButtons)
       g.render()
+    debug()
 
   }else if(gameMode == 'pause'){
     for(p of pauseButtons)
@@ -303,7 +304,7 @@ function updateButtons(){
   
     pauseButtons[1].x = windowWidth/ 2 
     pauseButtons[1].y = pauseButtons[0].y + pauseButtons[1].height * 1.25
-    pauseButtons[1].width = windowWidth * 0.25
+    pauseButtons[1].width = windowWidth * 0.24
     pauseButtons[1].height = windowWidth * 0.05
 
     //Dead
@@ -593,12 +594,35 @@ function inRange() {
 
 function upgradeHealth(){
   if(money >= shopButtons[1].text){
-    health = health + 20
-    maxHealth = maxHealth + 20
-    shopButtons[1].text = shopButtons[1].text * 2
-    console.log("Purchased")
+    money -= shopButtons[1].text
+    health *= 1.25
+    maxHealth *-1.25
+    shopButtons[1].text = shopButtons[1].text * 1.25
   }
 }
+
+function debug(){
+  for(e of enemys){
+    e.speed = 0;
+    e.damage = 0;
+  }
+  manualProjectile.setSpeed(manualProjectile.defaultSpeed = 5)
+}
+
+function upgradeBulletSpeed(){
+  if(money >= shopButtons[2].text){
+    money -= shopButtons[2].text
+    shopButtons[2].text = shopButtons[2].text * 1.25
+
+    for(m of manualProjectiles){
+      m.defaultSpeed *= 1.25
+    }
+
+    manualProjectile.setSpeed(manualProjectile.defaultSpeed * 1.25)
+  }
+}
+
+
 
 
 
