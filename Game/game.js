@@ -211,7 +211,6 @@ function draw() {
   else if(gameMode == 'play'){
     for(g of gameButtons)
       g.render()
-    debug()
 
   }else if(gameMode == 'pause'){
     for(p of pauseButtons)
