@@ -17,7 +17,7 @@ var shopButtons = []
 
 // --- (Mechanics (Game) ) ---:
 var lastSpawned = 0
-var spawnCooldown = 1000
+var spawnCooldown = 2500
 
 // --- (Mechanics) (Player)  ---:
 var money = 0
@@ -593,10 +593,10 @@ function inRange() {
 
 function upgradeHealth(){
   if(money >= shopButtons[1].text){
-    money -= shopButtons[1].text
+    money -= shopButtons[1].text 
     health *= 1.25
-    maxHealth *-1.25
-    shopButtons[1].text = shopButtons[1].text * 1.25
+    maxHealth *= 1.25
+    shopButtons[1].text = round(shopButtons[1].text * 2)
   }
 }
 
@@ -611,7 +611,7 @@ function debug(){
 function upgradeBulletSpeed(){
   if(money >= shopButtons[2].text){
     money -= shopButtons[2].text
-    shopButtons[2].text = shopButtons[2].text * 1.25
+    shopButtons[2].text = round(shopButtons[2].text * 2)
 
     for(m of manualProjectiles){
       m.defaultSpeed *= 1.25

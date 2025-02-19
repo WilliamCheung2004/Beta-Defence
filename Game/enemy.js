@@ -7,7 +7,7 @@ class Enemy {
     this.w = min(windowWidth,windowHeight) * 0.06
     this.h = min(windowWidth,windowHeight) * 0.06
     //stats
-    this.health = 10
+    this.health = 1
     this.damage = 1
     this.defaultSpeed = 1
     this.speed = min(windowWidth * this.defaultSpeed / 500, windowHeight * this.defaultSpeed / 500)
