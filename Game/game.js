@@ -529,7 +529,6 @@ function spawn() {
 
 function increaseHealth(){
   if((enemysSpawned % 10) == 0 && !increasedHealth){
-    console.log("Called")
     Enemy.increaseHealth()
     increasedHealth = true
   }  else if (enemysSpawned % 10 != 0){
