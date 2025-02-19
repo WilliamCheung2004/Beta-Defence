@@ -1,5 +1,5 @@
 class Enemy {
-  
+  static defaultHealth = 1
   constructor(x, y) {
     //attributes of enemies
     this.x = x
@@ -7,7 +7,7 @@ class Enemy {
     this.w = min(windowWidth,windowHeight) * 0.06
     this.h = min(windowWidth,windowHeight) * 0.06
     //stats
-    this.health = 1
+    this.health = Enemy.defaultHealth
     this.damage = 1
     this.defaultSpeed = 1
     this.speed = min(windowWidth * this.defaultSpeed / 500, windowHeight * this.defaultSpeed / 500)
@@ -57,5 +57,8 @@ class Enemy {
           gameMode = "dead", buttons = deadButtons
         }
     }
+  }
+  static increaseHealth(){
+    Enemy.defaultHealth += 1
   }
 }

@@ -25,7 +25,8 @@ var health = 400;
 var maxHealth = 400;
 
 // --- (Mechanics) (Enemy)  ---:
-enemysSpawned = 1
+let enemysSpawned = 1
+let increasedHealth = false
 
 // --- (Mechanics) (Manual Tower)---:
 defaultRange = 200
@@ -233,19 +234,6 @@ function restAlpha(){
 
 // --- (Update methods) ---:
 
-//Menu updating (Only when screen size changes) 
-function updateMenu(){
-  if(gameMode == "menu"){
-  background(start)
-  fill("gold")
-  let titleSize = min(windowWidth, windowHeight) * 0.1
-  textSize(titleSize)
-  stroke("black")
-  textAlign(CENTER,CENTER)
-  text("Beta Defence", windowWidth / 2, windowHeight/2 - menuButtons[0].height/8);
-  }
- }
-
 //Game updating 
 function updateGame(){
   
@@ -350,7 +338,6 @@ setInterval(function() {
 //Update game per screen change
 function windowResized(){
   resizeCanvas(windowWidth, windowHeight)
-  updateMenu();
   updateGame();
   updateButtons();
 }
@@ -441,6 +428,7 @@ function drawGame() {
     e.draw();
     if(gameMode === 'play'){
     e.update();
+    increaseHealth()
     }
   }
 
@@ -536,6 +524,16 @@ function spawn() {
       enemys.push(new Enemy(xco, yco))
       lastSpawned = millis()
     }
+  }
+}
+
+function increaseHealth(){
+  if((enemysSpawned % 10) == 0 && !increasedHealth){
+    console.log("Called")
+    Enemy.increaseHealth()
+    increasedHealth = true
+  }  else if (enemysSpawned % 10 != 0){
+   increasedHealth = false; 
   }
 }
 
