@@ -3,6 +3,9 @@ I tried to recreate some aspects of the game and seeing how far I can replicate 
 
 To run the game first download all the game files then:
 
+Most Simplest option (Given that GitHub is working):
+1. Go to link:  https://williamcheung2004.github.io/Beta-Defence/
+
 If using Visual Studio:
 1. Download Extention Live Preview
 2. Import the game files
