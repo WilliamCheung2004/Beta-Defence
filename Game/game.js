@@ -21,6 +21,7 @@ var spawnCooldown = 2500
 
 // --- (Mechanics) (Player)  ---:
 var money = 0
+var defaultHealth = 400
 var health = 400;
 var maxHealth = 400;
 
@@ -51,9 +52,12 @@ let colorSpeed = 5
 let drawn = false
 
 // --- Shop Upgrades (Starting Price)) ---:
-let healthUpgrade = "100"
-let projectileSpeed = "150"
-let projectileDamage = "400"
+let defaultHealthUpgrade = "100"
+let defaultProjectileSpeed = "150"
+let defaultProjectileDamage = "400"
+let healthUpgrade = defaultHealthUpgrade
+let projectileSpeed = defaultProjectileSpeed
+let projectileDamage = defaultProjectileDamage
 
 // --- (Canvas Loading) ---:
 
@@ -162,14 +166,22 @@ function mousePressed() {
 
 //Reset game when player dies / Starts new one
 function reset() {
+  //game objects
   enemys.length = 0
   projectiles.length = 0
   manualProjectiles.length = 0
-  health = maxHealth
+  //player
+  health = defaultHealth
+  maxHealth = defaultHealth
   money = 0
+  manualProjectile.reset()
+  //enemy
   enemysSpawned = 1
   Enemy.reset()
-  manualProjectile.reset()
+  //shop upgrades
+  shopButtons[1].text = defaultHealthUpgrade
+  shopButtons[2].text = defaultProjectileSpeed
+  shopButtons[3].text = defaultProjectileDamage
 }
 
 let drawnMenu = false
@@ -347,7 +359,7 @@ setInterval(function() {
     prevHeight = window.innerHeight
     windowResized()
   }
-},500)
+},0)
 
 
 //Update game per screen change
@@ -360,32 +372,33 @@ function windowResized(){
 // ---(Drawing methods) ---:
 
 function drawDead() {
-  
+
+  noStroke()
+
   let time = millis()
     if(time > colorSpeed && alpha <= 100){
       alpha+=5
     }
+  
+  background(100,alpha)
 
-  background(255,alpha)
-
+  if(!drawn){
   //Box for buttons 
+  stroke(255)
   fill("white")
   rect(windowWidth/2,deadButtons[0].y - deadButtons[0].height/2,min(windowWidth*0.4,windowHeight * 0.45),min(windowWidth*0.4,windowHeight * 0.45))
-  stroke(255)
+  }
 
   //Text
   textSize(min(windowWidth, windowHeight) * 0.1)
   textAlign(CENTER,CENTER)
   fill("black")
-  stroke(255)
-  text("You Died!", windowWidth/2, deadButtons[0].y - deadButtons[0].height * 1.75)
-
+  text("You died!", windowWidth/2, deadButtons[0].y - deadButtons[0].height * 1.75)
 }
 
 function drawMenu() {
-  reset()
-  background(0)
   background(start)
+  reset()
   fill("gold")
   let titleSize = min(windowWidth, windowHeight) * 0.1
   textSize(titleSize)
@@ -468,6 +481,7 @@ function drawGame() {
 
 
 function drawPause() {
+  noStroke()
 
   let time = millis()
     if(time > colorSpeed && alpha <= 100){
@@ -478,6 +492,7 @@ function drawPause() {
 
   if(!drawn){
   //Box for buttons 
+  stroke(255)
   fill("white")
   rect(windowWidth/2,pauseButtons[0].y - pauseButtons[0].height/2,min(windowWidth*0.4,windowHeight * 0.45),min(windowWidth*0.4,windowHeight * 0.45))
 
@@ -485,7 +500,6 @@ function drawPause() {
   textSize(min(windowWidth, windowHeight) * 0.1)
   textAlign(CENTER,CENTER)
   fill("black")
-  stroke(255)
   text("Paused", windowWidth/2, pauseButtons[0].y - pauseButtons[0].height * 1.75)
   }
 }
