@@ -69,13 +69,20 @@ class Projectile {
   }
   hashitenemy() {
     for (let i = enemys.length - 1; i >= 0; i--) {
-      let enemyHit = collideRectCircle(enemys[i].x - 25, enemys[i].y - 25, 50, 50, this.pos.x, this.pos.y, 15)
+      let enemyHit = collideRectCircle(enemys[i].x - enemys[i].w/2, enemys[i].y - enemys[i].h/2, enemys[i].w, enemys[i].h, this.x, this.y, this.r)
+      
       if (enemyHit) {
+        enemys[i].health -= this.damage
+        console.log(enemys[i].health)
+        Projectiles.splice(Projectiles.indexOf(this), 1)
+        enemyHit = false
+
+        if(enemys[i].health <= 0){
         enemys.splice(i, 1)
-        projectiles.splice(projectiles.indexOf(this), 1)
-        money += 100
+        money += 50
         enemysSpawned++
         return true
+        }
       }
     }
     return false
@@ -129,5 +136,9 @@ class manualProjectile {
   }
   static setSpeed(val){
     manualProjectile.defaultSpeed = val
+  }
+  static reset(){
+    manualProjectile.defaultSpeed = 1
+    manualProjectile.defaultDamage = 1
   }
 }

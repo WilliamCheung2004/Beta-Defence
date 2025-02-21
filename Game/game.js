@@ -50,9 +50,10 @@ let alpha = 0
 let colorSpeed = 5
 let drawn = false
 
-// --- Shop Upgrades) ---:
-let healthUpgrade = "200"
-let projectileUpgrade = "200"
+// --- Shop Upgrades (Starting Price)) ---:
+let healthUpgrade = "100"
+let projectileSpeed = "150"
+let projectileDamage = "400"
 
 // --- (Canvas Loading) ---:
 
@@ -60,7 +61,8 @@ let projectileUpgrade = "200"
 function preload() {
   start = loadImage("Assets/background.png");
   upgrade1 = loadImage("Assets/heart.png")
-  upgrade2 = loadImage("Assets/ammo.png")
+  upgrade2 = loadImage("Assets/ammoSpeed.png")
+  upgrade3 = loadImage("Assets/ammoUpgrade.png")
 }
 
 function setup() {
@@ -91,7 +93,8 @@ function setup() {
 
     [new Button("X", 0,0,0,0, () => { gameMode = 'play'; buttons = gameButtons }),
     new Button(healthUpgrade, 0,0,0,0, () => { gameMode = 'shop'; buttons = shopButtons;upgradeHealth()}),
-    new Button(projectileUpgrade, 0,0,0,0, () => { gameMode = 'shop'; buttons = shopButtons;upgradeBulletSpeed()})
+    new Button(projectileSpeed, 0,0,0,0, () => { gameMode = 'shop'; buttons = shopButtons;upgradeBulletSpeed()}),
+    new Button(projectileDamage, 0,0,0,0, () => { gameMode = 'shop'; buttons = shopButtons;upgradeBulletDamage()})
      ]
 
   buttons = menuButtons
@@ -142,7 +145,12 @@ function setup() {
   shopButtons[2].width = min(windowWidth,windowHeight) * 0.15
   shopButtons[2].height = min(windowWidth,windowHeight) * 0.07
   shopButtons[2].x = min(windowWidth,windowHeight) * 0.25
-  shopButtons[2].y = min(windowWidth,windowHeight) * 0.5615
+  shopButtons[2].y = min(windowWidth,windowHeight) * 0.6
+
+  shopButtons[3].width = min(windowWidth,windowHeight) * 0.15
+  shopButtons[3].height = min(windowWidth,windowHeight) * 0.07
+  shopButtons[3].x = min(windowWidth,windowHeight) * 0.25
+  shopButtons[3].y = min(windowWidth,windowHeight) * 0.9
 }
 
 // --- (Game methods) ---:
@@ -160,6 +168,8 @@ function reset() {
   health = maxHealth
   money = 0
   enemysSpawned = 1
+  Enemy.reset()
+  manualProjectile.reset()
 }
 
 let drawnMenu = false
@@ -319,7 +329,12 @@ function updateButtons(){
     shopButtons[2].width = min(windowWidth,windowHeight) * 0.15
     shopButtons[2].height = min(windowWidth,windowHeight) * 0.07
     shopButtons[2].x = min(windowWidth,windowHeight) * 0.25
-    shopButtons[2].y = min(windowWidth,windowHeight) * 0.5615
+    shopButtons[2].y = min(windowWidth,windowHeight) * 0.6
+  
+    shopButtons[3].width = min(windowWidth,windowHeight) * 0.15
+    shopButtons[3].height = min(windowWidth,windowHeight) * 0.07
+    shopButtons[3].x = min(windowWidth,windowHeight) * 0.25
+    shopButtons[3].y = min(windowWidth,windowHeight) * 0.9
 }
 
 //Check if window is maximised or minimized since windowResized does not check this
@@ -484,12 +499,14 @@ function drawShop() {
   fill("white")
   textAlign(CENTER,CENTER)
   textSize(min(windowWidth, windowHeight) * 0.05)
-  text("Shop (Beta Version 1.0)", windowWidth / 2, min(windowWidth, windowHeight) * 0.05)
-  text("Health", min(windowWidth,windowHeight) * 0.18, min(windowWidth, windowHeight) * 0.2)
-  text("Bullet Speed", min(windowWidth,windowHeight) * 0.18, min(windowWidth, windowHeight) * 0.45)
+  text("Shop (Beta Version 2.0)", windowWidth / 2, min(windowWidth, windowHeight) * 0.05)
+  text("Health", min(windowWidth,windowHeight) * 0.1, min(windowWidth, windowHeight) * 0.16)
+  text("Bullet Speed", min(windowWidth,windowHeight) * 0.17, min(windowWidth, windowHeight) * 0.45)
+  text("Bullet Damage", min(windowWidth,windowHeight) * 0.19, min(windowWidth, windowHeight) * 0.75)
   imageMode(CENTER,CENTER)
-  image(upgrade1,min(windowWidth,windowHeight) * 0.05, min(windowWidth,windowHeight) * 0.315,min(windowWidth, windowHeight) * 0.2,min(windowWidth, windowHeight) * 0.2)
-  image(upgrade2,min(windowWidth,windowHeight) * 0.05, min(windowWidth,windowHeight) * 0.565,min(windowWidth, windowHeight) * 0.1,min(windowWidth, windowHeight) * 0.1)
+  image(upgrade1,min(windowWidth,windowHeight) * 0.05, min(windowWidth,windowHeight) * 0.32,min(windowWidth, windowHeight) * 0.2,min(windowWidth, windowHeight) * 0.2)
+  image(upgrade2,min(windowWidth,windowHeight) * 0.07, min(windowWidth,windowHeight) * 0.6,min(windowWidth, windowHeight) * 0.1,min(windowWidth, windowHeight) * 0.1)
+  image(upgrade3,min(windowWidth,windowHeight) * 0.07, min(windowWidth,windowHeight) * 0.9,min(windowWidth, windowHeight) * 0.1,min(windowWidth, windowHeight) * 0.1)
 }
 
 
@@ -615,6 +632,16 @@ function upgradeBulletSpeed(){
     }
 
     manualProjectile.setSpeed(manualProjectile.defaultSpeed * 1.25)
+  }
+}
+
+function upgradeBulletDamage(){
+  if(money >= shopButtons[3].text){
+    money -= shopButtons[3].text
+    shopButtons[3].text = round(shopButtons[3].text * 2)
+    manualProjectile.defaultDamage += 1
+    console.log("Bought damage upgrade")
+    console.log(manualProjectile.defaultDamage)
   }
 }
 

@@ -61,4 +61,7 @@ class Enemy {
   static increaseHealth(){
     Enemy.defaultHealth += 1
   }
+  static reset(){
+    Enemy.defaultHealth = 1
+  }
 }
