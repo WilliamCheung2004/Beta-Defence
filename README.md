@@ -1,10 +1,12 @@
 This is sort of a tower defence game which is based on a mobile game ad I saw one day caleld (The Tower - Idle Tower Defense). 
 I tried to recreate some aspects of the game and seeing how far I can replicate some aspects of the original game.
 
-To run the game first download all the game files then:
+To run the game:
 
 Most Simplest option (Given that GitHub is working):
 1. Go to link:  https://williamcheung2004.github.io/Beta-Defence/
+
+Or if downloading the game (Most up to date version):
 
 If using Visual Studio:
 1. Download Extention Live Preview
