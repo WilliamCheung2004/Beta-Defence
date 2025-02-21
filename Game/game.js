@@ -384,6 +384,7 @@ function drawDead() {
 
 function drawMenu() {
   reset()
+  background(0)
   background(start)
   fill("gold")
   let titleSize = min(windowWidth, windowHeight) * 0.1
