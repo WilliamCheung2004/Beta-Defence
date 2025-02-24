@@ -8,12 +8,12 @@ var deadButtons = []
 var shopButtons = []
 var gameMode = 'menu'
 var towers = [];
-var towersRange = [];
 var enemys = [];
+var shooters = [];
+var towersRange = [];
 var projectiles = [];
 var manualProjectiles = []
 var shopButtons = []
-
 
 // --- (Mechanics (Game) ) ---:
 var lastSpawned = 0
@@ -63,14 +63,15 @@ let projectileDamage = defaultProjectileDamage
 
 // loads in image for menu background
 function preload() {
-  start = loadImage("Assets/background.png");
+  start = loadImage("Assets/background.png")
   upgrade1 = loadImage("Assets/heart.png")
   upgrade2 = loadImage("Assets/ammoSpeed.png")
   upgrade3 = loadImage("Assets/ammoUpgrade.png")
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight)
+  canvas = createCanvas(windowWidth, windowHeight)
+  console.log("Canvas created:", windowWidth, windowHeight)
   frameRate(60)
   pixelDensity(1)
   
@@ -85,7 +86,7 @@ function setup() {
 
   pauseButtons = [
     new Button("Continue", 0,0,0,0, () => { gameMode = 'play'; buttons = gameButtons }),
-    new Button('Quit', 0,0,0,0, () => { gameMode = 'menu'; buttons = menuButtons })
+    new Button('Quit', 0,0,0,0, () => { gameMode = 'menu'; buttons = menuButtons})
   ]
 
   deadButtons =
@@ -347,6 +348,7 @@ function updateButtons(){
     shopButtons[3].height = min(windowWidth,windowHeight) * 0.07
     shopButtons[3].x = min(windowWidth,windowHeight) * 0.25
     shopButtons[3].y = min(windowWidth,windowHeight) * 0.9
+    
 }
 
 //Check if window is maximised or minimized since windowResized does not check this
@@ -359,7 +361,7 @@ setInterval(function() {
     prevHeight = window.innerHeight
     windowResized()
   }
-},0)
+},200)
 
 
 //Update game per screen change
@@ -396,8 +398,21 @@ function drawDead() {
   text("You died!", windowWidth/2, deadButtons[0].y - deadButtons[0].height * 1.75)
 }
 
-function drawMenu() {
-  background(start)
+function drawMenu() { 
+
+  background(255)
+  imageMode(CENTER)
+
+  let imageWidth = windowWidth
+  let imageHeight = windowHeight
+
+  if (imageWidth > windowWidth) {
+    imageHeight = windowHeight
+    imageWidth = windowHeight
+   }
+
+
+  image(start,windowWidth/2,windowHeight/2,imageWidth,imageHeight)   
   reset()
   fill("gold")
   let titleSize = min(windowWidth, windowHeight) * 0.1
@@ -405,6 +420,7 @@ function drawMenu() {
   stroke("black")
   textAlign(CENTER,CENTER)
   text("Beta Defence", windowWidth / 2, windowHeight/2 - menuButtons[0].height/8);
+ 
 }
 
 function drawHealth(){
@@ -439,12 +455,9 @@ function drawMoney(){
 }
 
 function drawGame() {
+  // inRange()
 
-  //inRange()
-
-  if(!hasDrawn){
   background("black");
-}
   drawHealth();
   drawMoney();
   rectMode(CENTER)
@@ -461,13 +474,20 @@ function drawGame() {
     }
   }
 
+  let latestProjectile = null
+
   for (p of projectiles) {
     p.draw();
     if(gameMode === 'play'){
     p.update();
     }
     p.hashitenemy()
+    latestProjectile = p
   }
+
+  // if(latestProjectile){
+  //   latestProjectile.drawGun()
+  // }
 
   for (m of manualProjectiles) {
     m.draw()
@@ -596,7 +616,6 @@ function mouseClicked() {
 
 //--- (Tower Mechanics) ---
 function inRange() {
-
   //Cooldown for the tower
   if (millis() > lastFired + cooldown) {
 
@@ -655,8 +674,6 @@ function upgradeBulletDamage(){
     money -= shopButtons[3].text
     shopButtons[3].text = round(shopButtons[3].text * 2)
     manualProjectile.defaultDamage += 1
-    console.log("Bought damage upgrade")
-    console.log(manualProjectile.defaultDamage)
   }
 }
 

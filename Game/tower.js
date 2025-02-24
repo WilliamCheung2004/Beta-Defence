@@ -25,18 +25,6 @@ class Tower {
     rect(0, windowWidth * 0.015, windowWidth * 0.03, windowWidth * 0.05)
     pop()
 
-    //tower auto cannon
-    // push()
-    // translate(this.x, this.y);
-    // fill("silver");
-    // stroke("black");
-    // rotate(this.autoAngle - PI/2);
-    // rect(0, windowWidth * 0.015, windowWidth * 0.03, windowWidth * 0.05);
-    // pop();
-  }
-  rotateCannon(target){
-    let targetPos = createVector(target.x,target.y)
-    this.autoAngle = p5.Vector.sub(targetPos,this.pos).heading()
   }
 }
 class TowerRange {
@@ -52,21 +40,61 @@ class TowerRange {
     circle(this.x,this.y,this.r);
   }
 }
+
+let turretX = null
+let turretY = null
+let turretSet = false
+
 class Projectile {
-  constructor(src, tgt) {
-    this.speed = 1
-    this.pos = createVector(src.x, src.y)
-    this.bv = createVector(tgt.x - src.x, tgt.y - src.y)
-    this.bv.setMag(this.speed)
-    towers[0].rotateCannon(tgt)
+  constructor(src, tgt,towerRX,towerRY,towerRR) {
+    this.speed = 1;
+    this.pos = createVector(src.x, src.y);
+    this.bv = createVector(tgt.x - src.x, tgt.y - src.y);
+    this.bv.setMag(this.speed);
+
+    this.tempX = towerRX
+    this.tempY = towerRY
+    this.tempR = towerRR
   }
-    draw() {
+
+  draw() {
+    //projectile
+    push()
     fill("white")
     ellipse(this.pos.x, this.pos.y, 15)
+    pop()
+}
+
+
+drawTurret(upgrade4){
+
+  // push()
+  // fill("blue")
+  // noStroke()
+  // ellipse(towers[0].x + towersRange[0].r/2,towers[0].y, min(windowWidth,windowHeight) * 0.02)
+  // pop()
+
+  if(!turretSet){ 
+    turretX = this.tempX + random(-this.tempR/2,this.tempR/2)
+    turretY = this.tempY + random(-this.tempR/2,this.tempR/2)
+    turretSet = true
   }
+
+  push()
+  translate(turretX,turretY)
+  let angle = this.bv.heading()
+  rotate(angle)
+  image(upgrade4, -25,-25, 50,50) 
+  pop()
+
+}
+
+
+
   update() {
-    this.pos.add(this.bv)
+    this.pos.add(this.bv);
   }
+
   hashitenemy() {
     for (let i = enemys.length - 1; i >= 0; i--) {
       let enemyHit = collideRectCircle(enemys[i].x - enemys[i].w/2, enemys[i].y - enemys[i].h/2, enemys[i].w, enemys[i].h, this.x, this.y, this.r)
@@ -87,7 +115,9 @@ class Projectile {
     }
     return false
   }
+
 }
+
 class manualProjectile {
   static defaultSpeed = 1
   static defaultDamage = 1
@@ -140,5 +170,31 @@ class manualProjectile {
   static reset(){
     manualProjectile.defaultSpeed = 1
     manualProjectile.defaultDamage = 1
+  }
+}
+
+class Shooter {
+  constructor() {
+    this.x = towers[0].x
+    this.y = towers[0].y
+    this.DistX = towers[0].x 
+    // this.DistY = towers[0].y - enemys[0].y;
+    // this.angle = Math.atan2(this.DistY, this.DistX)
+  }
+  draw() {
+
+    push()
+    fill("blue")
+    noStroke()
+    ellipse(this.x,this.y, min(windowWidth,windowHeight) * 0.02)
+    pop()
+
+    push()
+    rotate(this.angle)
+    image(upgrade4, this.x - min(windowWidth,windowHeight) * 0.02, this.y - min(windowWidth,windowHeight) * 0.02, min(windowWidth,windowHeight) * 0.04, min(windowWidth,windowHeight) * 0.04)
+    pop()
+  }
+  update() {
+    this.angle = Math.atan2(this.DistY, this.DistX)
   }
 }
