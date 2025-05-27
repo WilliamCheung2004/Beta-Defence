@@ -7,9 +7,13 @@ I tried to recreate some aspects of the game and seeing how far I can replicate 
 ## ⚙️ Instructions to run game 
 To run the game:
 
+---
+
 ### Option 1
 Most Simplest option (Given that GitHub is working):
 1. Go to [link](https://williamcheung2004.github.io/Beta-Defence/)
+
+---
 
 ### Option 2
 I recommend using Visual Studio:
@@ -19,6 +23,8 @@ I recommend using Visual Studio:
 4. Right click index.html and then show preview, the game should run from there
 5. You can also then use the hamburger icon provided by this extention to run the game in a browser
 
+---
+
 ### Other options:
 1. Download the files from Game folder
 2. Download [Python](https://www.python.org/downloads/) (Skip to step 3 if you have Python already)
@@ -27,6 +33,8 @@ I recommend using Visual Studio:
 5. Type - python -m http.server in command prompt note it may be py or python32 depending on your version 
 6. Then within your browser of choice type in : http://localhost:8000/index.html
 7. The game should now be running within your browser.
+
+---
 
 This local server is required to run the game since a CORS error will pop up if not - basically meaning the game won't run properly.
 
