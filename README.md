@@ -36,7 +36,7 @@ I hope you enjoy your time playing this game.
 
 ## 🎮 Features
 * Classic tower defence gameplay loop
-* Inspired by "The Tower — Idle Tower Defense"
+* Inspired by [The Tower — Idle Tower Defense](https://play.google.com/store/apps/details?id=com.TechTreeGames.TheTower&hl=en_GB)
 * Playable directly in the browser
 
 ---
