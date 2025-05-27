@@ -7,11 +7,11 @@ I tried to recreate some aspects of the game and seeing how far I can replicate 
 ## ⚙️ Instructions to run game 
 To run the game:
 
-# Option 1
+### Option 1
 Most Simplest option (Given that GitHub is working):
 1. Go to [link](https://williamcheung2004.github.io/Beta-Defence/)
 
-# Option 2
+### Option 2
 I recommend using Visual Studio:
 1. First download the files from Game folder
 2. From extentions download Live Preview
@@ -19,7 +19,7 @@ I recommend using Visual Studio:
 4. Right click index.html and then show preview, the game should run from there
 5. You can also then use the hamburger icon provided by this extention to run the game in a browser
 
-## Other options:
+### Other options:
 1. Download the files from Game folder
 2. Within windows run Command Prompt 
 3. In Command Prompt navigate to the game folder using cd - e.g. (cd C:\Users\Name\Downloads\Beta-Defence)
