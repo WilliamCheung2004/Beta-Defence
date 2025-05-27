@@ -4,28 +4,31 @@ I tried to recreate some aspects of the game and seeing how far I can replicate 
 
 ---
 
-## ⚙️ Instructions
+## ⚙️ Instructions to run game 
 To run the game:
 
+# Option 1
 Most Simplest option (Given that GitHub is working):
 1. Go to [link](https://williamcheung2004.github.io/Beta-Defence/)
 
-Or if downloading the game (Most up to date version):
-
+# Option 2
 I recommend using Visual Studio:
-1. From extentions download Live Preview
-2. Import the game files
-3. Right click index.html and then show preview, the game should run from there
-4. You can also then use the hamburger icon provided by this extention to run the game in a browser
+1. First download the files from Game folder
+2. From extentions download Live Preview
+3. Import the game files
+4. Right click index.html and then show preview, the game should run from there
+5. You can also then use the hamburger icon provided by this extention to run the game in a browser
 
 ## Other options:
-1. Within windows run Command Prompt 
-2. In Command Prompt navigate to the game folder using cd - e.g. (cd C:\Users\Name\Downloads\Beta-Defence)
-3. Type - python -m http.server in command prompt note it may be py or python32 depending on your version 
-4. Then within your browser of choice type in : http://localhost:8000/index.html
-5. The game should now be running within your browser.
+1. Download the files from Game folder
+2. Within windows run Command Prompt 
+3. In Command Prompt navigate to the game folder using cd - e.g. (cd C:\Users\Name\Downloads\Beta-Defence)
+4. Type - python -m http.server in command prompt note it may be py or python32 depending on your version 
+5. Then within your browser of choice type in : http://localhost:8000/index.html
+6. The game should now be running within your browser.
 
 This local server is required to run the game since a CORS error will pop up if not - basically meaning the game won't run properly.
+
 I hope you enjoy your time playing this game.
 
 ---
