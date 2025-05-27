@@ -9,13 +9,13 @@ To run the game:
 
 ---
 
-### Option 1
+### 1️⃣ 
 Most Simplest option (Given that GitHub is working):
 1. Go to [link](https://williamcheung2004.github.io/Beta-Defence/)
 
 ---
 
-### Option 2
+### 2️⃣
 I recommend using Visual Studio:
 1. First download the files from Game folder
 2. From extentions download Live Preview
