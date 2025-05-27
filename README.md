@@ -38,8 +38,6 @@ I recommend using Visual Studio:
 
 This local server is required to run the game since a CORS error will pop up if not - basically meaning the game won't run properly.
 
-I hope you enjoy your time playing this game.
-
 ---
 
 ## 🎮 Features
@@ -49,5 +47,6 @@ I hope you enjoy your time playing this game.
 
 ---
 
-Thanks for playing :)
+I hope you enjoy your time playing this game.
+Thanks for playing 🙂
 
