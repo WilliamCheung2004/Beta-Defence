@@ -47,6 +47,5 @@ This local server is required to run the game since a CORS error will pop up if 
 
 ---
 
-I hope you enjoy your time playing this game.
-Thanks for playing 🙂
+ I hope you enjoy your time playing this game, thanks for playing 🙂
 
