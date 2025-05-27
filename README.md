@@ -12,15 +12,15 @@ Most Simplest option (Given that GitHub is working):
 
 Or if downloading the game (Most up to date version):
 
-If using Visual Studio:
-1. Download Extention Live Preview
+I recommend using Visual Studio:
+1. From extentions download Live Preview
 2. Import the game files
 3. Right click index.html and then show preview, the game should run from there
 4. You can also then use the hamburger icon provided by this extention to run the game in a browser
 
 ## Other options:
 1. Within windows run Command Prompt 
-2. In Command Prompt navigate to the game folder using cd - e.g. (cd C:\Users\Name\Downloads\Beta-Defence-main>)
+2. In Command Prompt navigate to the game folder using cd - e.g. (cd C:\Users\Name\Downloads\Beta-Defence)
 3. Type - python -m http.server in command prompt note this depends on your python version and if you have it installed
 4. Then within your browser of choice type in : http://localhost:8000/index.html
 5. The game should now be running within your browser.
