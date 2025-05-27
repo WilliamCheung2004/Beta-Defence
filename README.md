@@ -1,6 +1,5 @@
 # Beta Defence - Tower Defence Game 
-This is sort of a tower defence game which is based on a mobile game ad I saw (The Tower - Idle Tower Defense). 
-I tried to recreate some aspects of the game and seeing how far I can replicate some aspects of the original game.
+This is sort of a tower defence game which is based on a mobile game ad I saw (The Tower - Idle Tower Defense).  ␣␣ I tried to recreate some aspects of the game and seeing how far I can replicate some aspects of the original game.
 
 ---
 
