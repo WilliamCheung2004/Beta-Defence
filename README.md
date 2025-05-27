@@ -21,7 +21,7 @@ I recommend using Visual Studio:
 ## Other options:
 1. Within windows run Command Prompt 
 2. In Command Prompt navigate to the game folder using cd - e.g. (cd C:\Users\Name\Downloads\Beta-Defence)
-3. Type - python -m http.server in command prompt note this depends on your python version and if you have it installed
+3. Type - python -m http.server in command prompt note it may be py or python32 depending on your version 
 4. Then within your browser of choice type in : http://localhost:8000/index.html
 5. The game should now be running within your browser.
 
