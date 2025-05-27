@@ -31,9 +31,9 @@ I hope you enjoy your time playing this game.
 ---
 
 ## 🎮 Features
-*Classic tower defence gameplay loop
-*Inspired by "The Tower — Idle Tower Defense"
-*Playable directly in the browser
+* Classic tower defence gameplay loop
+* Inspired by "The Tower — Idle Tower Defense"
+* Playable directly in the browser
 
 ---
 
