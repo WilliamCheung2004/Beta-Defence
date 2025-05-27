@@ -21,11 +21,12 @@ I recommend using Visual Studio:
 
 ### Other options:
 1. Download the files from Game folder
-2. Within windows run Command Prompt 
-3. In Command Prompt navigate to the game folder using cd - e.g. (cd C:\Users\Name\Downloads\Beta-Defence)
-4. Type - python -m http.server in command prompt note it may be py or python32 depending on your version 
-5. Then within your browser of choice type in : http://localhost:8000/index.html
-6. The game should now be running within your browser.
+2. Download [python](https://www.python.org/downloads/)
+3. Within windows run Command Prompt 
+4. In Command Prompt navigate to the game folder using cd - e.g. (cd C:\Users\Name\Downloads\Beta-Defence)
+5. Type - python -m http.server in command prompt note it may be py or python32 depending on your version 
+6. Then within your browser of choice type in : http://localhost:8000/index.html
+7. The game should now be running within your browser.
 
 This local server is required to run the game since a CORS error will pop up if not - basically meaning the game won't run properly.
 
