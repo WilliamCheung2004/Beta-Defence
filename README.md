@@ -21,7 +21,7 @@ I recommend using Visual Studio:
 
 ### Other options:
 1. Download the files from Game folder
-2. Download [python](https://www.python.org/downloads/)
+2. Download [Python](https://www.python.org/downloads/) skip to step 3 if you have Python
 3. Within windows run Command Prompt 
 4. In Command Prompt navigate to the game folder using cd - e.g. (cd C:\Users\Name\Downloads\Beta-Defence)
 5. Type - python -m http.server in command prompt note it may be py or python32 depending on your version 
